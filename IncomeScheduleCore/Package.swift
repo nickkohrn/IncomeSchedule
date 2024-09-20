@@ -67,6 +67,7 @@ let package = Package(
             name: "ScheduleFeature",
             dependencies: [
                 "Models",
+                "ScheduleCreationFeature",
                 "SharedStateExtensions",
                 .product(
                     name: "ComposableArchitecture",

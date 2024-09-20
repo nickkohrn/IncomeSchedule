@@ -1,5 +1,6 @@
 import ComposableArchitecture
 import Models
+import ScheduleCreationFeature
 import SwiftUI
 
 public struct ScheduleView: View {
@@ -13,6 +14,18 @@ public struct ScheduleView: View {
         List {
             
         }
+        .onAppear { store.send(.onAppear) }
+        .sheet(
+            item: $store.scope(
+                state: \.destination?.scheduleCreation,
+                action: \.destination.scheduleCreation
+            )
+        ) { store in
+            NavigationStack {
+                ScheduleCreationView(store: store)
+            }
+            .interactiveDismissDisabled()
+        }
     }
 }
 
@@ -21,9 +34,7 @@ public struct ScheduleView: View {
         ScheduleView(
             store: StoreOf<ScheduleReducer>(
                 initialState: ScheduleReducer.State(),
-                reducer: {
-                    ScheduleReducer()
-                }
+                reducer: { ScheduleReducer() }
             )
         )
     }

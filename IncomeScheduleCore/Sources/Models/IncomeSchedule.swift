@@ -15,4 +15,5 @@ public struct IncomeSchedule {
 
 extension IncomeSchedule: Codable {}
 extension IncomeSchedule: Equatable {}
+extension IncomeSchedule: Hashable {}
 extension IncomeSchedule: Sendable {}

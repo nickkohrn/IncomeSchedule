@@ -10,9 +10,7 @@ struct IncomeScheduleApp: App {
                 ScheduleView(
                     store: StoreOf<ScheduleReducer>(
                         initialState: ScheduleReducer.State(),
-                        reducer: {
-                            ScheduleReducer()
-                        }
+                        reducer: { ScheduleReducer() }
                     )
                 )
             }

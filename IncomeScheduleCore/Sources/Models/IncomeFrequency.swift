@@ -7,6 +7,7 @@ public enum IncomeFrequency {
 
 extension IncomeFrequency: CaseIterable {}
 extension IncomeFrequency: Codable {}
+extension IncomeFrequency: Hashable {}
 
 extension IncomeFrequency: Identifiable {
     public var id: String { name }
