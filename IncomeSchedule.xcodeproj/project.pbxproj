@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		F9DDFB182C9E030700488DC5 /* ScheduleCreationFeature in Frameworks */ = {isa = PBXBuildFile; productRef = F9DDFB172C9E030700488DC5 /* ScheduleCreationFeature */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		F9DDFA902C9DDFD600488DC5 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -52,6 +56,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F9DDFB182C9E030700488DC5 /* ScheduleCreationFeature in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -78,6 +83,7 @@
 				F9DDFA812C9DDFD500488DC5 /* IncomeSchedule */,
 				F9DDFA922C9DDFD600488DC5 /* IncomeScheduleTests */,
 				F9DDFA9C2C9DDFD600488DC5 /* IncomeScheduleUITests */,
+				F9DDFB162C9E030700488DC5 /* Frameworks */,
 				F9DDFA802C9DDFD500488DC5 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -90,6 +96,13 @@
 				F9DDFA992C9DDFD600488DC5 /* IncomeScheduleUITests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		F9DDFB162C9E030700488DC5 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -112,6 +125,7 @@
 			);
 			name = IncomeSchedule;
 			packageProductDependencies = (
+				F9DDFB172C9E030700488DC5 /* ScheduleCreationFeature */,
 			);
 			productName = IncomeSchedule;
 			productReference = F9DDFA7F2C9DDFD500488DC5 /* IncomeSchedule.app */;
@@ -568,6 +582,14 @@
 			relativePath = IncomeScheduleCore;
 		};
 /* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		F9DDFB172C9E030700488DC5 /* ScheduleCreationFeature */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F9DDFABB2C9DE0B700488DC5 /* XCLocalSwiftPackageReference "IncomeScheduleCore" */;
+			productName = ScheduleCreationFeature;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = F9DDFA772C9DDFD500488DC5 /* Project object */;
 }
