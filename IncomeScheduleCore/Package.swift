@@ -23,6 +23,10 @@ let package = Package(
             targets: ["ScheduleCreationFeature"]
         ),
         .library(
+            name: "ScheduleFeature",
+            targets: ["ScheduleFeature"]
+        ),
+        .library(
             name: "SharedStateExtensions",
             targets: ["SharedStateExtensions"]
         ),
@@ -50,6 +54,17 @@ let package = Package(
         ),
         .target(
             name: "ScheduleCreationFeature",
+            dependencies: [
+                "Models",
+                "SharedStateExtensions",
+                .product(
+                    name: "ComposableArchitecture",
+                    package: "swift-composable-architecture"
+                )
+            ]
+        ),
+        .target(
+            name: "ScheduleFeature",
             dependencies: [
                 "Models",
                 "SharedStateExtensions",
