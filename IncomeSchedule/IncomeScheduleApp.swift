@@ -1,5 +1,5 @@
 import ComposableArchitecture
-import ScheduleCreationFeature
+import ScheduleFeature
 import SwiftUI
 
 @main
@@ -7,12 +7,10 @@ struct IncomeScheduleApp: App {
     var body: some Scene {
         WindowGroup {
             NavigationStack {
-                ScheduleCreationView(
-                    store: StoreOf<ScheduleCreationReducer>(
-                        initialState: ScheduleCreationReducer.State(),
-                        reducer: {
-                            ScheduleCreationReducer()
-                        }
+                ScheduleView(
+                    store: StoreOf<ScheduleReducer>(
+                        initialState: ScheduleReducer.State(),
+                        reducer: { ScheduleReducer() }
                     )
                 )
             }

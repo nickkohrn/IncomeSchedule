@@ -78,6 +78,11 @@ public struct ScheduleCreationView: View {
                     .dynamicTypeSize(.large ... .xxxLarge)
                     .opacity(inlineTitleOpacity)
             }
+            ToolbarItem(placement: .confirmationAction) {
+                Button("Done") {
+                    store.send(.tappedDoneButton)
+                }
+            }
         }
         .navigationBarTitleDisplayMode(.inline)
     }

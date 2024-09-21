@@ -26,3 +26,16 @@ extension PersistenceReaderKey where Self == PersistenceKeyDefault<FileStorageKe
         PersistenceKeyDefault(.incomeSchedule, IncomeSchedule(date: .now, frequency: .biWeekly))
     }
 }
+
+extension PersistenceReaderKey where Self == AppStorageKey<Bool> {
+    public static var didSetInitialIncomeSchedule: Self {
+        appStorage("didSetInitialIncomeScheduleKey")
+    }
+}
+
+
+extension PersistenceReaderKey where Self == PersistenceKeyDefault<AppStorageKey<Bool>> {
+    public static var didSetInitialIncomeSchedule: Self {
+        PersistenceKeyDefault(.didSetInitialIncomeSchedule, false)
+    }
+}

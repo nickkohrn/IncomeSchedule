@@ -7,7 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		F9DDFB182C9E030700488DC5 /* ScheduleCreationFeature in Frameworks */ = {isa = PBXBuildFile; productRef = F9DDFB172C9E030700488DC5 /* ScheduleCreationFeature */; };
+		F9972A802C9E0EFC007B2E3C /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = F9972A7F2C9E0EFC007B2E3C /* ComposableArchitecture */; };
+		F9972A832C9E0FC7007B2E3C /* ScheduleFeature in Frameworks */ = {isa = PBXBuildFile; productRef = F9972A822C9E0FC7007B2E3C /* ScheduleFeature */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -28,6 +29,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		F9972A812C9E0F33007B2E3C /* IncomeScheduleCore */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = IncomeScheduleCore; sourceTree = "<group>"; };
 		F9DDFA7F2C9DDFD500488DC5 /* IncomeSchedule.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = IncomeSchedule.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F9DDFA8F2C9DDFD600488DC5 /* IncomeScheduleTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = IncomeScheduleTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		F9DDFA992C9DDFD600488DC5 /* IncomeScheduleUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = IncomeScheduleUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -56,7 +58,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F9DDFB182C9E030700488DC5 /* ScheduleCreationFeature in Frameworks */,
+				F9972A832C9E0FC7007B2E3C /* ScheduleFeature in Frameworks */,
+				F9972A802C9E0EFC007B2E3C /* ComposableArchitecture in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -80,6 +83,7 @@
 		F9DDFA762C9DDFD500488DC5 = {
 			isa = PBXGroup;
 			children = (
+				F9972A812C9E0F33007B2E3C /* IncomeScheduleCore */,
 				F9DDFA812C9DDFD500488DC5 /* IncomeSchedule */,
 				F9DDFA922C9DDFD600488DC5 /* IncomeScheduleTests */,
 				F9DDFA9C2C9DDFD600488DC5 /* IncomeScheduleUITests */,
@@ -125,7 +129,8 @@
 			);
 			name = IncomeSchedule;
 			packageProductDependencies = (
-				F9DDFB172C9E030700488DC5 /* ScheduleCreationFeature */,
+				F9972A7F2C9E0EFC007B2E3C /* ComposableArchitecture */,
+				F9972A822C9E0FC7007B2E3C /* ScheduleFeature */,
 			);
 			productName = IncomeSchedule;
 			productReference = F9DDFA7F2C9DDFD500488DC5 /* IncomeSchedule.app */;
@@ -210,7 +215,7 @@
 			mainGroup = F9DDFA762C9DDFD500488DC5;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				F9DDFABB2C9DE0B700488DC5 /* XCLocalSwiftPackageReference "IncomeScheduleCore" */,
+				F9972A7E2C9E0EFC007B2E3C /* XCRemoteSwiftPackageReference "swift-composable-architecture" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = F9DDFA802C9DDFD500488DC5 /* Products */;
@@ -576,18 +581,26 @@
 		};
 /* End XCConfigurationList section */
 
-/* Begin XCLocalSwiftPackageReference section */
-		F9DDFABB2C9DE0B700488DC5 /* XCLocalSwiftPackageReference "IncomeScheduleCore" */ = {
-			isa = XCLocalSwiftPackageReference;
-			relativePath = IncomeScheduleCore;
+/* Begin XCRemoteSwiftPackageReference section */
+		F9972A7E2C9E0EFC007B2E3C /* XCRemoteSwiftPackageReference "swift-composable-architecture" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/pointfreeco/swift-composable-architecture";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.15.0;
+			};
 		};
-/* End XCLocalSwiftPackageReference section */
+/* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		F9DDFB172C9E030700488DC5 /* ScheduleCreationFeature */ = {
+		F9972A7F2C9E0EFC007B2E3C /* ComposableArchitecture */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = F9DDFABB2C9DE0B700488DC5 /* XCLocalSwiftPackageReference "IncomeScheduleCore" */;
-			productName = ScheduleCreationFeature;
+			package = F9972A7E2C9E0EFC007B2E3C /* XCRemoteSwiftPackageReference "swift-composable-architecture" */;
+			productName = ComposableArchitecture;
+		};
+		F9972A822C9E0FC7007B2E3C /* ScheduleFeature */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = ScheduleFeature;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

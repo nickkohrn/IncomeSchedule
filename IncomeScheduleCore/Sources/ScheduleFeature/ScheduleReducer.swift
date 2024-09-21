@@ -1,25 +1,29 @@
 import ComposableArchitecture
 import Foundation
 import Models
+import ScheduleCreationFeature
 import SharedStateExtensions
 
 @Reducer
-public struct ScheduleCreationReducer {
+public struct ScheduleReducer {
+    @Reducer(state: .hashable)
+    public enum Destination {
+        case scheduleCreation(ScheduleCreationReducer)
+    }
+    
     @ObservableState
-    public struct State: Equatable, Hashable {
+    public struct State: Equatable {
+        @Presents public var destination: Destination.State?
         @Shared(.didSetInitialIncomeSchedule) public var didSetInitialIncomeSchedule
         @Shared(.incomeSchedule) public var incomeSchedule
         
         public init() {}
-        
-        public func hash(into hasher: inout Hasher) {}
     }
     
     public enum Action: BindableAction {
         case binding(BindingAction<State>)
+        case destination(PresentationAction<Destination.Action>)
         case onAppear
-        case selectedDate(Date)
-        case tappedDoneButton
     }
     
     public var body: some ReducerOf<Self> {
@@ -29,19 +33,22 @@ public struct ScheduleCreationReducer {
             case .binding:
                 return .none
                 
+            case .destination(.presented(.scheduleCreation(.tappedDoneButton))):
+                state.destination = nil
+                return .none
+                
+            case .destination:
+                return .none
+                
             case .onAppear:
-                return .none
-                
-            case .selectedDate(let date):
-                @Dependency(\.calendar) var calendar
-                state.incomeSchedule.date = calendar.startOfDay(for: date)
-                return .none
-                
-            case .tappedDoneButton:
-                state.didSetInitialIncomeSchedule = true
+                if !state.didSetInitialIncomeSchedule {
+                    state.destination = .scheduleCreation(ScheduleCreationReducer.State())
+                    return .none
+                }
                 return .none
             }
         }
+        .ifLet(\.$destination, action: \.destination)
     }
     
     public init() {}
