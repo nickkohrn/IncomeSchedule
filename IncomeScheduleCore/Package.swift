@@ -15,8 +15,20 @@ let package = Package(
             targets: ["IncomeScheduleCore"]
         ),
         .library(
+            name: "DesignSystem",
+            targets: ["DesignSystem"]
+        ),
+        .library(
             name: "Models",
             targets: ["Models"]
+        ),
+        .library(
+            name: "MonthScheduleDetailsFeature",
+            targets: ["MonthScheduleDetailsFeature"]
+        ),
+        .library(
+            name: "ScheduleClient",
+            targets: ["ScheduleClient"]
         ),
         .library(
             name: "ScheduleCreationFeature",
@@ -33,12 +45,24 @@ let package = Package(
     ],
     dependencies: [
         .package(
+            url: "https://github.com/apple/swift-algorithms.git",
+            from: "1.0.0"
+        ),
+        .package(
             url: "https://github.com/pointfreeco/swift-composable-architecture",
             from: "1.0.0"
         ),
         .package(
             url: "https://github.com/pointfreeco/swift-dependencies.git",
             from: "1.0.0"
+        ),
+        .package(
+            url: "https://github.com/pointfreeco/swift-identified-collections.git",
+            from: "1.0.0"
+        ),
+        .package(
+            url: "https://github.com/pointfreeco/swift-tagged.git",
+            from: "0.0.0"
         ),
     ],
     targets: [
@@ -50,7 +74,57 @@ let package = Package(
             dependencies: ["IncomeScheduleCore"]
         ),
         .target(
-            name: "Models"
+            name: "DesignSystem"
+        ),
+        .target(
+            name: "Models",
+            dependencies: [
+                .product(
+                    name: "IdentifiedCollections",
+                    package: "swift-identified-collections"
+                ),
+                .product(
+                    name: "Tagged",
+                    package: "swift-tagged"
+                )
+            ]
+        ),
+        .target(
+            name: "MonthScheduleDetailsFeature",
+            dependencies: [
+                "DesignSystem",
+                "Models",
+                .product(
+                    name: "ComposableArchitecture",
+                    package: "swift-composable-architecture"
+                ),
+                .product(
+                    name: "Dependencies",
+                    package: "swift-dependencies"
+                )
+            ]
+        ),
+        .target(
+            name: "ScheduleClient",
+            dependencies: [
+                "Models",
+                .product(
+                    name: "Algorithms",
+                    package: "swift-algorithms"
+                ),
+                .product(
+                    name: "Dependencies",
+                    package: "swift-dependencies"
+                ),
+                .product(
+                    name: "DependenciesMacros",
+                    package: "swift-dependencies"
+                ),
+                .product(
+                    name: "IdentifiedCollections",
+                    package: "swift-identified-collections"
+                )
+            ]
         ),
         .target(
             name: "ScheduleCreationFeature",
@@ -67,6 +141,8 @@ let package = Package(
             name: "ScheduleFeature",
             dependencies: [
                 "Models",
+                "MonthScheduleDetailsFeature",
+                "ScheduleClient",
                 "ScheduleCreationFeature",
                 "SharedStateExtensions",
                 .product(
