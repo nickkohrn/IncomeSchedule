@@ -13,43 +13,97 @@ public struct ScheduleClient: Sendable {
     }
     
     public var yearSchedule: @Sendable (
-        _ date: Date,
+        _ currentDate: Date,
         _ incomeSchedule: IncomeSchedule
     ) throws -> YearSchedule
 }
 
 extension ScheduleClient: DependencyKey {
     public static let liveValue: ScheduleClient = {
-        ScheduleClient { date, incomeSchedule in
+        ScheduleClient { currentDate, incomeSchedule in
             @Dependency(\.calendar) var calendar
-            // Get the start of the day for the pay date.
-            let payDate = calendar.startOfDay(for: incomeSchedule.date)
-            // Get the end of the year.
-            guard
-                let nextYear = calendar.date(byAdding: .year, value: 1, to: date),
-                let startOfNextYear = calendar.dateInterval(of: .year, for: nextYear)?.start
-            else {
+            var dates = [Date]()
+            // 1. Get the start of the year the current date.
+            guard let startOfCurrentYear = calendar.dateInterval(of: .year, for: currentDate)?.start else {
                 throw Error.invalidDate
             }
-            // Get all pay dates until the end of the year.
-            var dates = [payDate]
+            // 2. Use the recorded pay date to go backwards by the specified frequency to the first pay date of
+            // the year for the current date.
+            let payDate = calendar.startOfDay(for: incomeSchedule.date)
+            var firstPayDateOfCurrentYear = payDate
             switch incomeSchedule.frequency {
             case .biWeekly:
-                var iterationDate = payDate
-                // Get pay dates from start of month for pay date until pay date.
-                guard let startOfPayDateMonth = calendar.dateInterval(of: .month, for: payDate)?.start else {
-                    throw Error.invalidDate
-                }
-                while iterationDate > startOfPayDateMonth {
-                    guard var previousDate = calendar.date(byAdding: .weekOfMonth, value: -2, to: iterationDate) else {
+                // If the start of the current year is < the logged pay date, then go backward to the first
+                // pay date of the current year.
+                if startOfCurrentYear < incomeSchedule.date {
+                    var iterationDate = firstPayDateOfCurrentYear
+                    while startOfCurrentYear < iterationDate {
+                        guard var previousDate = calendar.date(byAdding: .weekOfMonth, value: -2, to: iterationDate) else {
+                            throw Error.invalidDate
+                        }
+                        guard previousDate >= startOfCurrentYear else { break }
+                        iterationDate = previousDate
+                    }
+                    firstPayDateOfCurrentYear = iterationDate
+                // If the start of the current year is > the logged pay date, then go forward to the first
+                // pay date of the current year.
+                } else if startOfCurrentYear > incomeSchedule.date {
+                    guard let startOfNextYear = calendar.date(byAdding: .year, value: 1, to: startOfCurrentYear) else {
                         throw Error.invalidDate
                     }
-                    guard previousDate >= startOfPayDateMonth else { break }
-                    dates.insert(previousDate, at: 0)
-                    iterationDate = previousDate
+                    var iterationDate = firstPayDateOfCurrentYear
+                    while startOfCurrentYear > iterationDate {
+                        guard var nextDate = calendar.date(byAdding: .weekOfMonth, value: 2, to: iterationDate) else {
+                            throw Error.invalidDate
+                        }
+                        guard nextDate <= startOfNextYear else { break }
+                        iterationDate = nextDate
+                    }
+                    firstPayDateOfCurrentYear = iterationDate
+                } else {
+                    // TODO: Handle this
                 }
-                iterationDate = payDate
-                // Get all bi-weekly dates between the selected pay date and the end of the year.
+            case .weekly:
+                // If the start of the current year is < the logged pay date, then go backward to the first
+                // pay date of the current year.
+                if startOfCurrentYear < incomeSchedule.date {
+                    var iterationDate = firstPayDateOfCurrentYear
+                    while startOfCurrentYear < iterationDate {
+                        guard var previousDate = calendar.date(byAdding: .weekOfMonth, value: -1, to: iterationDate) else {
+                            throw Error.invalidDate
+                        }
+                        guard previousDate >= startOfCurrentYear else { break }
+                        iterationDate = previousDate
+                    }
+                    firstPayDateOfCurrentYear = iterationDate
+                // If the start of the current year is > the logged pay date, then go forward to the first
+                // pay date of the current year.
+                } else if startOfCurrentYear > incomeSchedule.date {
+                    guard let startOfNextYear = calendar.date(byAdding: .year, value: 1, to: startOfCurrentYear) else {
+                        throw Error.invalidDate
+                    }
+                    var iterationDate = firstPayDateOfCurrentYear
+                    while startOfCurrentYear > iterationDate {
+                        guard var nextDate = calendar.date(byAdding: .weekOfMonth, value: 1, to: iterationDate) else {
+                            throw Error.invalidDate
+                        }
+                        guard nextDate <= startOfNextYear else { break }
+                        iterationDate = nextDate
+                    }
+                    firstPayDateOfCurrentYear = iterationDate
+                } else {
+                    // TODO: Handle this
+                }
+            }
+            // 3. Get all pay dates from the start of that year to the end of that year.
+            guard let startOfNextYear = calendar.date(byAdding: .year, value: 1, to: startOfCurrentYear) else {
+                throw Error.invalidDate
+            }
+            switch incomeSchedule.frequency {
+            case .biWeekly:
+                // Get all bi-weekly dates in the current year.
+                var iterationDate = firstPayDateOfCurrentYear
+                dates.append(firstPayDateOfCurrentYear)
                 while iterationDate < startOfNextYear {
                     guard let nextDate = calendar.date(byAdding: .weekOfMonth, value: 2, to: iterationDate) else {
                         throw Error.invalidDate
@@ -59,21 +113,8 @@ extension ScheduleClient: DependencyKey {
                     iterationDate = nextDate
                 }
             case .weekly:
-                var iterationDate = payDate
-                // Get pay dates from start of month for pay date until pay date.
-                guard let startOfPayDateMonth = calendar.dateInterval(of: .month, for: payDate)?.start else {
-                    throw Error.invalidDate
-                }
-                while iterationDate > startOfPayDateMonth {
-                    guard let previousDate = calendar.date(byAdding: .weekOfMonth, value: -1, to: iterationDate) else {
-                        throw Error.invalidDate
-                    }
-                    guard previousDate >= startOfPayDateMonth else { break }
-                    dates.insert(previousDate, at: 0)
-                    iterationDate = previousDate
-                }
-                iterationDate = payDate
-                // Get all weekly dates between the selected pay date and the end of the year.
+                // Get all weekly dates in the current year.
+                var iterationDate = firstPayDateOfCurrentYear
                 while iterationDate < startOfNextYear {
                     guard let nextDate = calendar.date(byAdding: .weekOfMonth, value: 1, to: iterationDate) else {
                         throw Error.invalidDate

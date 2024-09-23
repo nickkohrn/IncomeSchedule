@@ -12,27 +12,68 @@ public struct ScheduleView: View {
     }
     
     public var body: some View {
-        List(store.yearSchedule.monthSchedules, id: \.self) { monthSchedule in
-            Button {
-                store.send(.tappedMonthSchedule(id: monthSchedule.id))
-            } label: {
-                LabeledContent {
-                    Text(monthSchedule.incomeDates.count.formatted())
-                } label: {
-                    HStack {
-                        if store.currentMonthSchedule?.id == monthSchedule.id {
-                            Image(systemName: "arrow.forward.circle.fill")
-                                .imageScale(.small)
+        List {
+            Section {
+                ForEach(store.yearSchedule.monthSchedules, id: \.self) { monthSchedule in
+                    Button {
+                        store.send(.tappedMonthSchedule(id: monthSchedule.id))
+                    } label: {
+                        LabeledContent {
+                            Text(monthSchedule.incomeDates.count.formatted())
+                        } label: {
+                            HStack {
+                                Text(
+                                    monthSchedule.incomeDates.first?.formatted(.dateTime.month(.wide)) ?? ""
+                                )
+                                if store.currentMonthSchedule?.id == monthSchedule.id {
+                                    Image(systemName: "circle.fill")
+                                        .font(.caption2)
+                                        .foregroundStyle(Color.orange.secondary)
+                                }
+                            }
                         }
-                        Text(monthSchedule.incomeDates.first?.formatted(.dateTime.month(.wide)) ?? "")
+                    }
+                    .alignmentGuide(.listRowSeparatorLeading) { _ in
+                        return 0
+                    }
+                }
+            } header: {
+                Text(store.sectionTitle)
+            }
+            .headerProminence(.increased)
+        }
+        .navigationTitle("Pay Schedule")
+        .onAppear { store.send(.onAppear) }
+        .safeAreaInset(edge: .bottom) {
+            HStack {
+                Button(action: {
+                    store.send(.tappedPreviousYearButton)
+                }) {
+                    HStack {
+                        Image(systemName: "chevron.backward")
+                        Text(store.previousButtonTitle)
+                    }
+                }
+                Spacer()
+                Button(action: {
+                    store.send(.tappedCurrentYearButton)
+                }) {
+                    Text("Today")
+                }
+                Spacer()
+                Button(action: {
+                    store.send(.tappedNextYearButton)
+                }) {
+                    HStack {
+                        Text(store.nextButtonTitle)
+                        Image(systemName: "chevron.forward")
                     }
                 }
             }
-            .alignmentGuide(.listRowSeparatorLeading) { _ in
-                return 0
-            }
+            .monospacedDigit()
+            .padding()
+            .background(Material.bar)
         }
-        .onAppear { store.send(.onAppear) }
         .sheet(
             item: $store.scope(
                 state: \.destination?.monthScheduleDetails,
