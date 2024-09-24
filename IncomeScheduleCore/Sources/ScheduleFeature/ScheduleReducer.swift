@@ -75,6 +75,7 @@ public struct ScheduleReducer {
         case tappedMonthSchedule(id: MonthSchedule.ID)
         case tappedNextYearButton
         case tappedPreviousYearButton
+        case tappedSettingsButton
     }
     
     public var body: some ReducerOf<Self> {
@@ -149,6 +150,10 @@ public struct ScheduleReducer {
                 }
                 state.selectedDate = startOfNextYear
                 return calculateSchedule(state: &state)
+                
+            case .tappedSettingsButton:
+                state.destination = .scheduleCreation(ScheduleCreationReducer.State())
+                return .none
             }
         }
         .ifLet(\.$destination, action: \.destination)
