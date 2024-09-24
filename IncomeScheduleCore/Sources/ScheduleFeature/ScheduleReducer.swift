@@ -32,6 +32,34 @@ public struct ScheduleReducer {
             })
         }
         
+        public var nextButtonTitle: String {
+            @Dependency(\.calendar) var calendar
+            guard
+                let startOfCurrentYear = calendar.dateInterval(of: .year, for: selectedDate)?.start,
+                let startOfNextYear = calendar.date(byAdding: .year, value: 1, to: startOfCurrentYear)
+            else {
+                // TODO: Handle this
+                return "Next"
+            }
+            return startOfNextYear.formatted(.dateTime.year())
+        }
+        
+        public var previousButtonTitle: String {
+            @Dependency(\.calendar) var calendar
+            guard
+                let startOfCurrentYear = calendar.dateInterval(of: .year, for: selectedDate)?.start,
+                let startOfPreviousYear = calendar.date(byAdding: .year, value: -1, to: startOfCurrentYear)
+            else {
+                // TODO: Handle this
+                return "Previous"
+            }
+            return startOfPreviousYear.formatted(.dateTime.year())
+        }
+        
+        public var sectionTitle: String {
+            yearSchedule.monthSchedules.first?.incomeDates.first?.formatted(.dateTime.year()) ?? ""
+        }
+        
         public init(selectedDate: Date = .now) {
             @Dependency(\.uuid) var uuid
             self.selectedDate = selectedDate
@@ -43,7 +71,10 @@ public struct ScheduleReducer {
         case binding(BindingAction<State>)
         case destination(PresentationAction<Destination.Action>)
         case onAppear
+        case tappedCurrentYearButton
         case tappedMonthSchedule(id: MonthSchedule.ID)
+        case tappedNextYearButton
+        case tappedPreviousYearButton
     }
     
     public var body: some ReducerOf<Self> {
@@ -71,6 +102,20 @@ public struct ScheduleReducer {
                 }
                 return calculateSchedule(state: &state)
                 
+            case .tappedCurrentYearButton:
+                @Dependency(\.calendar) var calendar
+                @Dependency(\.date.now) var now
+                guard let startOfCurrentYear = calendar.dateInterval(of: .year, for: now)?.start else {
+                    // TODO: Handle this
+                    return .none
+                }
+                let startOfSelectedDate = calendar.startOfDay(for: state.selectedDate)
+                guard !calendar.isDate(startOfCurrentYear, inSameDayAs: startOfSelectedDate) else {
+                    return .none
+                }
+                state.selectedDate = startOfCurrentYear
+                return calculateSchedule(state: &state)
+                
             case .tappedMonthSchedule(let id):
                 guard let monthSchedule = state.yearSchedule.monthSchedules[id: id] else {
                     // TODO: Handle this
@@ -80,6 +125,30 @@ public struct ScheduleReducer {
                     MonthScheduleDetailsReducer.State(monthSchedule: monthSchedule)
                 )
                 return .none
+                
+            case .tappedNextYearButton:
+                @Dependency(\.calendar) var calendar
+                guard
+                    let nextYear = calendar.date(byAdding: .year, value: 1, to: state.selectedDate),
+                    let startOfNextYear = calendar.dateInterval(of: .year, for: nextYear)?.start
+                else {
+                    // TODO: Handle this
+                    return .none
+                }
+                state.selectedDate = startOfNextYear
+                return calculateSchedule(state: &state)
+                
+            case .tappedPreviousYearButton:
+                @Dependency(\.calendar) var calendar
+                guard
+                    let nextYear = calendar.date(byAdding: .year, value: -1, to: state.selectedDate),
+                    let startOfNextYear = calendar.dateInterval(of: .year, for: nextYear)?.start
+                else {
+                    // TODO: Handle this
+                    return .none
+                }
+                state.selectedDate = startOfNextYear
+                return calculateSchedule(state: &state)
             }
         }
         .ifLet(\.$destination, action: \.destination)
@@ -92,7 +161,7 @@ public struct ScheduleReducer {
             @Dependency(\.scheduleClient) var scheduleClient
             @Dependency(\.date.now) var now
             let yearSchedule = try scheduleClient.yearSchedule(
-                date: state.selectedDate,
+                currentDate: state.selectedDate,
                 incomeSchedule: state.incomeSchedule
             )
             state.yearSchedule = yearSchedule
