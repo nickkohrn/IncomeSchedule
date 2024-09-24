@@ -32,6 +32,15 @@ public struct ScheduleReducer {
             })
         }
         
+        public var isCurrentYearSchedule: Bool {
+            @Dependency(\.calendar) var calendar
+            @Dependency(\.date.now) var now
+            guard let firstIncomeDate = yearSchedule.monthSchedules.flatMap(\.incomeDates).first else {
+                return false
+            }
+            return calendar.isDate(firstIncomeDate, equalTo: now, toGranularity: .year)
+        }
+        
         public var nextButtonTitle: String {
             @Dependency(\.calendar) var calendar
             guard

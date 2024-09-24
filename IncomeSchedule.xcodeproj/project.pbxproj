@@ -7,11 +7,24 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		F978C0382CA3245700C4511A /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F978C0372CA3245700C4511A /* WidgetKit.framework */; };
+		F978C03A2CA3245700C4511A /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F978C0392CA3245700C4511A /* SwiftUI.framework */; };
+		F978C0472CA3245800C4511A /* IncomeScheduleWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = F978C0362CA3245700C4511A /* IncomeScheduleWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		F978C04E2CA32AF700C4511A /* Models in Frameworks */ = {isa = PBXBuildFile; productRef = F978C04D2CA32AF700C4511A /* Models */; };
+		F978C0542CA32EBE00C4511A /* ScheduleClient in Frameworks */ = {isa = PBXBuildFile; productRef = F978C0532CA32EBE00C4511A /* ScheduleClient */; };
+		F978C0562CA332F900C4511A /* SharedStateExtensions in Frameworks */ = {isa = PBXBuildFile; productRef = F978C0552CA332F900C4511A /* SharedStateExtensions */; };
 		F9972A802C9E0EFC007B2E3C /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = F9972A7F2C9E0EFC007B2E3C /* ComposableArchitecture */; };
 		F9972A832C9E0FC7007B2E3C /* ScheduleFeature in Frameworks */ = {isa = PBXBuildFile; productRef = F9972A822C9E0FC7007B2E3C /* ScheduleFeature */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		F978C0452CA3245800C4511A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F9DDFA772C9DDFD500488DC5 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F978C0352CA3245700C4511A;
+			remoteInfo = IncomeScheduleWidgetExtension;
+		};
 		F9DDFA902C9DDFD600488DC5 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = F9DDFA772C9DDFD500488DC5 /* Project object */;
@@ -28,14 +41,63 @@
 		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		F978C0482CA3245800C4511A /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				F978C0472CA3245800C4511A /* IncomeScheduleWidgetExtension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		F978C0362CA3245700C4511A /* IncomeScheduleWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = IncomeScheduleWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		F978C0372CA3245700C4511A /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
+		F978C0392CA3245700C4511A /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
 		F9972A812C9E0F33007B2E3C /* IncomeScheduleCore */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = IncomeScheduleCore; sourceTree = "<group>"; };
 		F9DDFA7F2C9DDFD500488DC5 /* IncomeSchedule.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = IncomeSchedule.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F9DDFA8F2C9DDFD600488DC5 /* IncomeScheduleTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = IncomeScheduleTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		F9DDFA992C9DDFD600488DC5 /* IncomeScheduleUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = IncomeScheduleUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		F9E232882CA43FA80046D432 /* IncomeScheduleWidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = IncomeScheduleWidgetExtension.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		F978C04B2CA3245800C4511A /* Exceptions for "IncomeScheduleWidget" folder in "IncomeScheduleWidgetExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = F978C0352CA3245700C4511A /* IncomeScheduleWidgetExtension */;
+		};
+		F9BE785B2CA6037300F71D05 /* Exceptions for "IncomeScheduleWidget" folder in "IncomeSchedule" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				NextMonth/NextMonthConfigurationAppIntent.swift,
+				NextMonth/NextMonthSystemSmallView.swift,
+				NextMonth/NextMonthTimelineEntry.swift,
+				NextMonth/NextMonthTimelineProvider.swift,
+				NextMonth/NextMonthWidget.swift,
+				NextMonth/NextMonthWidgetEntryView.swift,
+			);
+			target = F9DDFA7E2C9DDFD500488DC5 /* IncomeSchedule */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		F978C03B2CA3245700C4511A /* IncomeScheduleWidget */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				F9BE785B2CA6037300F71D05 /* Exceptions for "IncomeScheduleWidget" folder in "IncomeSchedule" target */,
+				F978C04B2CA3245800C4511A /* Exceptions for "IncomeScheduleWidget" folder in "IncomeScheduleWidgetExtension" target */,
+			);
+			path = IncomeScheduleWidget;
+			sourceTree = "<group>";
+		};
 		F9DDFA812C9DDFD500488DC5 /* IncomeSchedule */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = IncomeSchedule;
@@ -54,6 +116,18 @@
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		F978C0332CA3245700C4511A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F978C04E2CA32AF700C4511A /* Models in Frameworks */,
+				F978C0562CA332F900C4511A /* SharedStateExtensions in Frameworks */,
+				F978C03A2CA3245700C4511A /* SwiftUI.framework in Frameworks */,
+				F978C0542CA32EBE00C4511A /* ScheduleClient in Frameworks */,
+				F978C0382CA3245700C4511A /* WidgetKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		F9DDFA7C2C9DDFD500488DC5 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -83,10 +157,12 @@
 		F9DDFA762C9DDFD500488DC5 = {
 			isa = PBXGroup;
 			children = (
+				F9E232882CA43FA80046D432 /* IncomeScheduleWidgetExtension.entitlements */,
 				F9972A812C9E0F33007B2E3C /* IncomeScheduleCore */,
 				F9DDFA812C9DDFD500488DC5 /* IncomeSchedule */,
 				F9DDFA922C9DDFD600488DC5 /* IncomeScheduleTests */,
 				F9DDFA9C2C9DDFD600488DC5 /* IncomeScheduleUITests */,
+				F978C03B2CA3245700C4511A /* IncomeScheduleWidget */,
 				F9DDFB162C9E030700488DC5 /* Frameworks */,
 				F9DDFA802C9DDFD500488DC5 /* Products */,
 			);
@@ -98,6 +174,7 @@
 				F9DDFA7F2C9DDFD500488DC5 /* IncomeSchedule.app */,
 				F9DDFA8F2C9DDFD600488DC5 /* IncomeScheduleTests.xctest */,
 				F9DDFA992C9DDFD600488DC5 /* IncomeScheduleUITests.xctest */,
+				F978C0362CA3245700C4511A /* IncomeScheduleWidgetExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -105,6 +182,8 @@
 		F9DDFB162C9E030700488DC5 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				F978C0372CA3245700C4511A /* WidgetKit.framework */,
+				F978C0392CA3245700C4511A /* SwiftUI.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -112,6 +191,31 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		F978C0352CA3245700C4511A /* IncomeScheduleWidgetExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F978C04C2CA3245800C4511A /* Build configuration list for PBXNativeTarget "IncomeScheduleWidgetExtension" */;
+			buildPhases = (
+				F978C0322CA3245700C4511A /* Sources */,
+				F978C0332CA3245700C4511A /* Frameworks */,
+				F978C0342CA3245700C4511A /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				F978C03B2CA3245700C4511A /* IncomeScheduleWidget */,
+			);
+			name = IncomeScheduleWidgetExtension;
+			packageProductDependencies = (
+				F978C04D2CA32AF700C4511A /* Models */,
+				F978C0532CA32EBE00C4511A /* ScheduleClient */,
+				F978C0552CA332F900C4511A /* SharedStateExtensions */,
+			);
+			productName = IncomeScheduleWidgetExtension;
+			productReference = F978C0362CA3245700C4511A /* IncomeScheduleWidgetExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		F9DDFA7E2C9DDFD500488DC5 /* IncomeSchedule */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = F9DDFAA32C9DDFD600488DC5 /* Build configuration list for PBXNativeTarget "IncomeSchedule" */;
@@ -119,10 +223,12 @@
 				F9DDFA7B2C9DDFD500488DC5 /* Sources */,
 				F9DDFA7C2C9DDFD500488DC5 /* Frameworks */,
 				F9DDFA7D2C9DDFD500488DC5 /* Resources */,
+				F978C0482CA3245800C4511A /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				F978C0462CA3245800C4511A /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				F9DDFA812C9DDFD500488DC5 /* IncomeSchedule */,
@@ -192,6 +298,9 @@
 				LastSwiftUpdateCheck = 1600;
 				LastUpgradeCheck = 1600;
 				TargetAttributes = {
+					F978C0352CA3245700C4511A = {
+						CreatedOnToolsVersion = 16.0;
+					};
 					F9DDFA7E2C9DDFD500488DC5 = {
 						CreatedOnToolsVersion = 16.0;
 					};
@@ -225,11 +334,19 @@
 				F9DDFA7E2C9DDFD500488DC5 /* IncomeSchedule */,
 				F9DDFA8E2C9DDFD600488DC5 /* IncomeScheduleTests */,
 				F9DDFA982C9DDFD600488DC5 /* IncomeScheduleUITests */,
+				F978C0352CA3245700C4511A /* IncomeScheduleWidgetExtension */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		F978C0342CA3245700C4511A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		F9DDFA7D2C9DDFD500488DC5 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -254,6 +371,13 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		F978C0322CA3245700C4511A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		F9DDFA7B2C9DDFD500488DC5 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -278,6 +402,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		F978C0462CA3245800C4511A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F978C0352CA3245700C4511A /* IncomeScheduleWidgetExtension */;
+			targetProxy = F978C0452CA3245800C4511A /* PBXContainerItemProxy */;
+		};
 		F9DDFA912C9DDFD600488DC5 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = F9DDFA7E2C9DDFD500488DC5 /* IncomeSchedule */;
@@ -291,6 +420,62 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		F978C0492CA3245800C4511A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = IncomeScheduleWidgetExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = K6D967URM5;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = IncomeScheduleWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = IncomeScheduleWidget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.bryankohrn.IncomeSchedule.IncomeScheduleWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		F978C04A2CA3245800C4511A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = IncomeScheduleWidgetExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = K6D967URM5;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = IncomeScheduleWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = IncomeScheduleWidget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.bryankohrn.IncomeSchedule.IncomeScheduleWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 		F9DDFAA12C9DDFD600488DC5 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -415,6 +600,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = IncomeSchedule/IncomeSchedule.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"IncomeSchedule/Preview Content\"";
@@ -444,6 +630,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = IncomeSchedule/IncomeSchedule.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"IncomeSchedule/Preview Content\"";
@@ -543,6 +730,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		F978C04C2CA3245800C4511A /* Build configuration list for PBXNativeTarget "IncomeScheduleWidgetExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F978C0492CA3245800C4511A /* Debug */,
+				F978C04A2CA3245800C4511A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		F9DDFA7A2C9DDFD500488DC5 /* Build configuration list for PBXProject "IncomeSchedule" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -593,6 +789,18 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		F978C04D2CA32AF700C4511A /* Models */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Models;
+		};
+		F978C0532CA32EBE00C4511A /* ScheduleClient */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = ScheduleClient;
+		};
+		F978C0552CA332F900C4511A /* SharedStateExtensions */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = SharedStateExtensions;
+		};
 		F9972A7F2C9E0EFC007B2E3C /* ComposableArchitecture */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = F9972A7E2C9E0EFC007B2E3C /* XCRemoteSwiftPackageReference "swift-composable-architecture" */;

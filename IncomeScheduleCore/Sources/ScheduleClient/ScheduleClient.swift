@@ -12,6 +12,21 @@ public struct ScheduleClient: Sendable {
         case unknown
     }
     
+    public var currentMonthSchedule: @Sendable (
+        _ currentDate: Date,
+        _ incomeSchedule: IncomeSchedule
+    ) throws -> MonthSchedule
+    
+    public var nextMonthSchedule: @Sendable (
+        _ currentDate: Date,
+        _ incomeSchedule: IncomeSchedule
+    ) throws -> MonthSchedule
+    
+    public var nextPayDate: @Sendable (
+        _ currentDate: Date,
+        _ incomeSchedule: IncomeSchedule
+    ) throws -> Date
+    
     public var yearSchedule: @Sendable (
         _ currentDate: Date,
         _ incomeSchedule: IncomeSchedule
@@ -20,7 +35,8 @@ public struct ScheduleClient: Sendable {
 
 extension ScheduleClient: DependencyKey {
     public static let liveValue: ScheduleClient = {
-        ScheduleClient { currentDate, incomeSchedule in
+        @Sendable
+        func yearSchedule(currentDate: Date, incomeSchedule: IncomeSchedule) throws -> YearSchedule {
             @Dependency(\.calendar) var calendar
             var dates = [Date]()
             // 1. Get the start of the year the current date.
@@ -138,6 +154,98 @@ extension ScheduleClient: DependencyKey {
                 uuid: uuid()
             )
         }
+        return ScheduleClient(
+            currentMonthSchedule: { currentDate, incomeSchedule in
+                @Dependency(\.calendar) var calendar
+                @Dependency(\.date.now) var now
+                let yearSchedule = try yearSchedule(currentDate: currentDate, incomeSchedule: incomeSchedule)
+                let currentMonthSchedule = yearSchedule.monthSchedules.first(where: { monthSchedule in
+                    monthSchedule.incomeDates.contains(where: { date in
+                        calendar.isDate(date, equalTo: now, toGranularity: .month)
+                    })
+                })
+                guard let currentMonthSchedule else {
+                    throw Error.invalidDate
+                }
+                return currentMonthSchedule
+            },
+            nextMonthSchedule: { currentDate, incomeSchedule in
+                @Dependency(\.calendar) var calendar
+                @Dependency(\.date.now) var now
+                let currentYearSchedule = try yearSchedule(currentDate: currentDate, incomeSchedule: incomeSchedule)
+                let currentMonthSchedule = currentYearSchedule.monthSchedules.first { monthSchedule in
+                    monthSchedule.incomeDates.contains(where: { date in
+                        calendar.isDate(date, equalTo: now, toGranularity: .month)
+                    })
+                }
+                guard let currentMonthSchedule else {
+                    throw Error.invalidDate
+                }
+                let currentMonthScheduleIndex = currentYearSchedule.monthSchedules.index(id: currentMonthSchedule.id)
+                if currentMonthSchedule.id == currentYearSchedule.monthSchedules.last?.id,
+                    (now > currentYearSchedule.monthSchedules.last?.incomeDates.last ?? now) {
+                    // The last month in the current year has passed; calculate first month of next year.
+                    guard
+                        let startOfCurrentYear = calendar.dateInterval(of: .year, for: currentDate)?.start,
+                        let startOfNextYear = calendar.date(byAdding: .year, value: 1, to: startOfCurrentYear)
+                    else {
+                        throw Error.invalidDate
+                    }
+                    let nextYearSchedule = try yearSchedule(currentDate: startOfNextYear, incomeSchedule: incomeSchedule)
+                    guard let firstMonthScheduleOfNextYear = nextYearSchedule.monthSchedules.first else {
+                        throw Error.invalidDate
+                    }
+                    return firstMonthScheduleOfNextYear
+                } else {
+                    // Calculate next month schedule in current year.
+                    guard let currentMonthScheduleIndex else {
+                        throw Error.invalidDate
+                    }
+                    let nextMonthScheduleIndex = currentYearSchedule.monthSchedules.index(after: currentMonthScheduleIndex)
+                    return currentYearSchedule.monthSchedules[nextMonthScheduleIndex]
+                }
+            },
+            nextPayDate: { currentDate, incomeSchedule in
+                @Dependency(\.calendar) var calendar
+                @Dependency(\.date.now) var now
+                let currentYearSchedule = try yearSchedule(currentDate: currentDate, incomeSchedule: incomeSchedule)
+                let currentMonthSchedule = currentYearSchedule.monthSchedules.first { monthSchedule in
+                    monthSchedule.incomeDates.contains(where: { date in
+                        calendar.isDate(date, equalTo: now, toGranularity: .month)
+                    })
+                }
+                guard let currentMonthSchedule else {
+                    throw Error.invalidDate
+                }
+                let currentMonthScheduleIndex = currentYearSchedule.monthSchedules.index(id: currentMonthSchedule.id)
+                if currentMonthSchedule.id == currentYearSchedule.monthSchedules.last?.id,
+                    (now > currentYearSchedule.monthSchedules.last?.incomeDates.last ?? now) {
+                    // The last pay date has passed; calculate first pay date of next year.
+                    guard
+                        let startOfCurrentYear = calendar.dateInterval(of: .year, for: currentDate)?.start,
+                        let startOfNextYear = calendar.date(byAdding: .year, value: 1, to: startOfCurrentYear)
+                    else {
+                        throw Error.invalidDate
+                    }
+                    let nextYearSchedule = try yearSchedule(currentDate: startOfNextYear, incomeSchedule: incomeSchedule)
+                    guard let firstPayDateOfNextYear = nextYearSchedule.monthSchedules.first?.incomeDates.first else {
+                        throw Error.invalidDate
+                    }
+                    return firstPayDateOfNextYear
+                } else {
+                    // Calculate next pay date in current year.
+                    let allDates = currentYearSchedule.monthSchedules.flatMap(\.incomeDates)
+                    let nextPayDate = allDates.first { date in
+                        calendar.startOfDay(for: date) >= calendar.startOfDay(for: now)
+                    }
+                    guard let nextPayDate else {
+                        throw Error.invalidDate
+                    }
+                    return nextPayDate
+                }
+            },
+            yearSchedule: yearSchedule(currentDate:incomeSchedule:)
+        )
     }()
 }
 
