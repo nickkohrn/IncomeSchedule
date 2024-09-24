@@ -74,6 +74,15 @@ public struct ScheduleView: View {
             .padding()
             .background(Material.bar)
         }
+        .toolbar {
+            ToolbarItem(placement: .navigation) {
+                Button(action: {
+                    store.send(.tappedSettingsButton)
+                }) {
+                    Label("Settings", systemImage: "gearshape")
+                }
+            }
+        }
         .sheet(
             item: $store.scope(
                 state: \.destination?.monthScheduleDetails,
