@@ -60,6 +60,7 @@ public struct ScheduleView: View {
                 }) {
                     Text("Today")
                 }
+                .disabled(store.isCurrentYearSchedule)
                 Spacer()
                 Button(action: {
                     store.send(.tappedNextYearButton)

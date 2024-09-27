@@ -4,19 +4,13 @@ import Models
 
 extension PersistenceReaderKey where Self == FileStorageKey<IncomeSchedule> {
     public static var incomeSchedule: Self {
-        do {
-            let fileURL = try FileManager.default
-                .url(
-                    for: .applicationSupportDirectory,
-                    in: .userDomainMask,
-                    appropriateFor: nil,
-                    create: true
-                )
-                .appendingPathComponent("incomeSchedule")
-            return fileStorage(fileURL)
-        } catch {
-            fatalError("Missing file URL for income schedule: \(error)")
+        let fileURL = FileManager.default
+            .containerURL(forSecurityApplicationGroupIdentifier: "group.com.bryankohrn.IncomeSchedule")?
+            .appendingPathComponent("incomeSchedule")
+        guard let fileURL else {
+            fatalError("Missing file URL for income schedule")
         }
+        return fileStorage(fileURL)
     }
 }
 

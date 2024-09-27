@@ -7,6 +7,10 @@ public struct MonthSchedule {
     public let incomeDates: [Date]
     public let uuid: UUID
     
+    public var firstDate: Date? {
+        incomeDates.first
+    }
+    
     public init(
         incomeDates: [Date],
         uuid: UUID

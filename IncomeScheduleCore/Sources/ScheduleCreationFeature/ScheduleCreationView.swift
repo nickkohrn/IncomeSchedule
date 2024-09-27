@@ -37,7 +37,7 @@ public struct ScheduleCreationView: View {
                         } action: { inlineTitleOpacity in
                             self.inlineTitleOpacity = inlineTitleOpacity
                         }
-                    Text("Set your pay schedule to calculate the number of paychecks you will receive per month.")
+                    Text("Set your pay schedule to calculate the number of pays you will receive per month.")
                         .font(.callout)
                 }
                 .multilineTextAlignment(.center)
