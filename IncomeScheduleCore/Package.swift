@@ -23,6 +23,10 @@ let package = Package(
             targets: ["FileManagerClient"]
         ),
         .library(
+            name: "PaySourcesFeature",
+            targets: ["PaySourcesFeature"]
+        ),
+        .library(
             name: "Models",
             targets: ["Models"]
         ),
@@ -122,6 +126,18 @@ let package = Package(
                 .product(
                     name: "Dependencies",
                     package: "swift-dependencies"
+                )
+            ]
+        ),
+        .target(
+            name: "PaySourcesFeature",
+            dependencies: [
+                "DesignSystem",
+                "Models",
+                "SharedStateExtensions",
+                .product(
+                    name: "ComposableArchitecture",
+                    package: "swift-composable-architecture"
                 )
             ]
         ),
