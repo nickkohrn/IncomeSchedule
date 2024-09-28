@@ -4,25 +4,34 @@ import Models
 import SharedStateExtensions
 
 @Reducer
-public struct PaySourcesReducer {
+public struct PayScheduleReducer {
     @ObservableState
-    public struct State: Equatable, Hashable {
+    public struct State {
         @Shared(.paySources) public var paySources
+        public var selectedSourceID: PaySource.ID?
         
         public init() {}
-        
-        public func hash(into hasher: inout Hasher) {}
     }
     
-    public enum Action {
+    public enum Action: BindableAction {
+        case binding(BindingAction<State>)
         case onAppear
+        case selectedPaySource(id: PaySource.ID?)
     }
     
     public var body: some ReducerOf<Self> {
+        BindingReducer()
         Reduce { state, action in
             switch action {
                 
+            case .binding:
+                return .none
+                
             case .onAppear:
+                return .none
+                
+            case .selectedPaySource(id: let id):
+                state.selectedSourceID = id
                 return .none
             }
         }

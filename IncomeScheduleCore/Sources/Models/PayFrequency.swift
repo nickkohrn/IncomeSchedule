@@ -3,6 +3,7 @@ import Foundation
 public enum PayFrequency {
     case weekly
     case biWeekly
+    case monthly
 }
 
 extension PayFrequency: CaseIterable {}
@@ -20,6 +21,7 @@ extension PayFrequency {
         switch self {
         case .weekly: "weekly"
         case .biWeekly: "bi-weekly"
+        case .monthly: "monthly"
         }
     }
 }
