@@ -10,14 +10,14 @@ public struct CalendarClient {
         case invalidDate
     }
     
-    public var year: @Sendable (_ forDate: Date) throws -> Year
+    public var monthStartDates: @Sendable (_ forDate: Date) throws -> [Date]
 }
 
 extension CalendarClient: DependencyKey {
     public static let liveValue: CalendarClient = {
         @Dependency(\.calendar) var calendar
         return CalendarClient(
-            year: { date in
+            monthStartDates: { date in
                 // Get the start of the current year.
                 guard let interval = calendar.dateInterval(
                     of: .year,
@@ -27,7 +27,7 @@ extension CalendarClient: DependencyKey {
                 }
                 let start = interval.start
                 let end = interval.end
-                var months = [Month(startDate: start)]
+                var dates = [start]
                 var iterationDate = start
                 while iterationDate < end {
                     guard let nextMonthStartDate = calendar.date(
@@ -44,13 +44,10 @@ extension CalendarClient: DependencyKey {
                     ) else {
                         break
                     }
-                    months.append(Month(startDate: nextMonthStartDate))
+                    dates.append(nextMonthStartDate)
                     iterationDate = nextMonthStartDate
                 }
-                return Year(
-                    startDate: start,
-                    months: IdentifiedArray(uniqueElements: months)
-                )
+                return dates
             }
         )
     }()

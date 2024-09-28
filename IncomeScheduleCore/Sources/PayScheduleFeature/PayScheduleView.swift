@@ -10,16 +10,14 @@ public struct PayScheduleView: View {
     }
     
     public var body: some View {
-        List(store.year.months) { month in
-            Text(month.startDate.formatted(.dateTime.month(.wide)))
-        }
-        .navigationTitle("Pay Schedule")
-        .onAppear { store.send(.onAppear) }
-        .toolbar {
-            ToolbarItem(placement: .bottomBar) {
-                sourcesPicker
+        Text("Year")
+            .navigationTitle("Pay Schedule")
+            .onAppear { store.send(.onAppear) }
+            .toolbar {
+                ToolbarItem(placement: .bottomBar) {
+                    sourcesPicker
+                }
             }
-        }
     }
     
     @ViewBuilder
@@ -81,10 +79,10 @@ public struct PayScheduleView: View {
                 uuid: UUID()
             ),
             PaySource(
-                name: "Apple",
+                name: "Uber",
                 schedule: PaySchedule(
                     date: Calendar.current.date(from: DateComponents(year: 2024, month: 9, day: 15))!,
-                    frequency: .monthly
+                    frequency: .weekly
                 ),
                 uuid: UUID()
             )

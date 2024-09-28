@@ -183,6 +183,7 @@ let package = Package(
                 "CalendarClient",
                 "DesignSystem",
                 "Models",
+                "PayScheduleClient",
                 "SharedStateExtensions",
                 .product(
                     name: "ComposableArchitecture",
