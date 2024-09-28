@@ -19,12 +19,20 @@ let package = Package(
             targets: ["DesignSystem"]
         ),
         .library(
+            name: "FileManagerClient",
+            targets: ["FileManagerClient"]
+        ),
+        .library(
             name: "Models",
             targets: ["Models"]
         ),
         .library(
             name: "MonthScheduleDetailsFeature",
             targets: ["MonthScheduleDetailsFeature"]
+        ),
+        .library(
+            name: "PaySourceFormFeature",
+            targets: ["PaySourceFormFeature"]
         ),
         .library(
             name: "ScheduleClient",
@@ -77,6 +85,19 @@ let package = Package(
             name: "DesignSystem"
         ),
         .target(
+            name: "FileManagerClient",
+            dependencies: [
+                .product(
+                    name: "Dependencies",
+                    package: "swift-dependencies"
+                ),
+                .product(
+                    name: "DependenciesMacros",
+                    package: "swift-dependencies"
+                )
+            ]
+        ),
+        .target(
             name: "Models",
             dependencies: [
                 .product(
@@ -94,6 +115,22 @@ let package = Package(
             dependencies: [
                 "DesignSystem",
                 "Models",
+                .product(
+                    name: "ComposableArchitecture",
+                    package: "swift-composable-architecture"
+                ),
+                .product(
+                    name: "Dependencies",
+                    package: "swift-dependencies"
+                )
+            ]
+        ),
+        .target(
+            name: "PaySourceFormFeature",
+            dependencies: [
+                "DesignSystem",
+                "Models",
+                "SharedStateExtensions",
                 .product(
                     name: "ComposableArchitecture",
                     package: "swift-composable-architecture"
@@ -154,6 +191,7 @@ let package = Package(
         .target(
             name: "SharedStateExtensions",
             dependencies: [
+                "FileManagerClient",
                 "Models",
                 .product(
                     name: "ComposableArchitecture",
