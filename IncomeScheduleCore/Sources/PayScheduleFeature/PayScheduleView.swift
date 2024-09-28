@@ -15,38 +15,54 @@ public struct PayScheduleView: View {
             .onAppear { store.send(.onAppear) }
             .toolbar {
                 ToolbarItem(placement: .bottomBar) {
-                    Menu {
-                        Picker(
-                            "Sources",
-                            selection: $store.selectedSourceID.sending(
-                                \.selectedPaySource
-                            )
-                        ) {
-                            ForEach(
-                                store.paySources.sources.ids,
-                                id: \.self
-                            ) { id in
-                                if let source = store.paySources.sources[id: id] {
-                                    Text(source.name)
-                                        .tag(id)
-                                }
-                            }
-                        }
-                        Picker(
-                            "All",
-                            selection: $store.selectedSourceID.sending(
-                                \.selectedPaySource
-                            )) {
-                                Button("All") {
-                                    store.send(.selectedPaySource(id: nil))
-                                }
-                                .tag(nil as PaySource.ID?)
-                            }
-                    } label: {
-                        Text("Sources")
-                    }
+                    sourcesPicker
                 }
             }
+    }
+    
+    @ViewBuilder
+    private var allSourcesPicker: some View {
+        Picker(
+            "All",
+            selection: $store.selectedSourceID.sending(
+                \.selectedPaySource
+            )
+        ) {
+            Button("All") {
+                store.send(.selectedPaySource(id: nil))
+            }
+            .tag(nil as PaySource.ID?)
+        }
+    }
+    
+    @ViewBuilder
+    private var honestSourcesPicker: some View {
+        Picker(
+            "Sources",
+            selection: $store.selectedSourceID.sending(
+                \.selectedPaySource
+            )
+        ) {
+            ForEach(
+                store.paySources.sources.ids,
+                id: \.self
+            ) { id in
+                if let source = store.paySources.sources[id: id] {
+                    Text(source.name)
+                        .tag(id)
+                }
+            }
+        }
+    }
+    
+    @ViewBuilder
+    private var sourcesPicker: some View {
+        Menu {
+            allSourcesPicker
+            honestSourcesPicker
+        } label: {
+            Text("Sources")
+        }
     }
 }
 

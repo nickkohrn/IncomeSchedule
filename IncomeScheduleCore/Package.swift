@@ -15,6 +15,10 @@ let package = Package(
             targets: ["IncomeScheduleCore"]
         ),
         .library(
+            name: "CalendarClient",
+            targets: ["CalendarClient"]
+        ),
+        .library(
             name: "DesignSystem",
             targets: ["DesignSystem"]
         ),
@@ -33,6 +37,10 @@ let package = Package(
         .library(
             name: "PayScheduleFeature",
             targets: ["PayScheduleFeature"]
+        ),
+        .library(
+            name: "PayScheduleClient",
+            targets: ["PayScheduleClient"]
         ),
         .library(
             name: "PaySourceFormFeature",
@@ -86,6 +94,24 @@ let package = Package(
             dependencies: ["IncomeScheduleCore"]
         ),
         .target(
+            name: "CalendarClient",
+            dependencies: [
+                "Models",
+                .product(
+                    name: "Dependencies",
+                    package: "swift-dependencies"
+                ),
+                .product(
+                    name: "DependenciesMacros",
+                    package: "swift-dependencies"
+                ),
+                .product(
+                    name: "IdentifiedCollections",
+                    package: "swift-identified-collections"
+                )
+            ]
+        ),
+        .target(
             name: "DesignSystem"
         ),
         .target(
@@ -126,6 +152,28 @@ let package = Package(
                 .product(
                     name: "Dependencies",
                     package: "swift-dependencies"
+                )
+            ]
+        ),
+        .target(
+            name: "PayScheduleClient",
+            dependencies: [
+                "Models",
+                .product(
+                    name: "Algorithms",
+                    package: "swift-algorithms"
+                ),
+                .product(
+                    name: "Dependencies",
+                    package: "swift-dependencies"
+                ),
+                .product(
+                    name: "DependenciesMacros",
+                    package: "swift-dependencies"
+                ),
+                .product(
+                    name: "IdentifiedCollections",
+                    package: "swift-identified-collections"
                 )
             ]
         ),
