@@ -37,6 +37,13 @@ extension CalendarClient: DependencyKey {
                     ) else {
                         throw Error.invalidDate
                     }
+                    guard calendar.isDate(
+                        nextMonthStartDate,
+                        equalTo: start,
+                        toGranularity: .year
+                    ) else {
+                        break
+                    }
                     months.append(Month(startDate: nextMonthStartDate))
                     iterationDate = nextMonthStartDate
                 }

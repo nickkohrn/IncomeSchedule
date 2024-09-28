@@ -1,3 +1,4 @@
+import CalendarClient
 import ComposableArchitecture
 import Foundation
 import Models
@@ -9,6 +10,7 @@ public struct PayScheduleReducer {
     public struct State {
         @Shared(.paySources) public var paySources
         public var selectedSourceID: PaySource.ID?
+        public var year = Year(startDate: .now, months: [])
         
         public init() {}
     }
@@ -28,6 +30,15 @@ public struct PayScheduleReducer {
                 return .none
                 
             case .onAppear:
+                @Dependency(\.calendarClient) var calendarClient
+                @Dependency(\.date.now) var now
+                do {
+                    let year = try calendarClient.year(forDate: now)
+                    state.year = year
+                } catch {
+                    // TODO: Handle error
+                    print(error)
+                }
                 return .none
                 
             case .selectedPaySource(id: let id):

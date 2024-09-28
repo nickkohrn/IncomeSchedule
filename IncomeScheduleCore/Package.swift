@@ -180,6 +180,7 @@ let package = Package(
         .target(
             name: "PayScheduleFeature",
             dependencies: [
+                "CalendarClient",
                 "DesignSystem",
                 "Models",
                 "SharedStateExtensions",

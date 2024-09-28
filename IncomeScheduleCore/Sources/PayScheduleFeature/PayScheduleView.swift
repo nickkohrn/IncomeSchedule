@@ -10,14 +10,16 @@ public struct PayScheduleView: View {
     }
     
     public var body: some View {
-        Text(store.paySources.sources.count.formatted())
-            .navigationTitle("Pay Schedule")
-            .onAppear { store.send(.onAppear) }
-            .toolbar {
-                ToolbarItem(placement: .bottomBar) {
-                    sourcesPicker
-                }
+        List(store.year.months) { month in
+            Text(month.startDate.formatted(.dateTime.month(.wide)))
+        }
+        .navigationTitle("Pay Schedule")
+        .onAppear { store.send(.onAppear) }
+        .toolbar {
+            ToolbarItem(placement: .bottomBar) {
+                sourcesPicker
             }
+        }
     }
     
     @ViewBuilder
