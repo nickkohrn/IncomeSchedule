@@ -62,6 +62,10 @@ let package = Package(
             name: "SharedStateExtensions",
             targets: ["SharedStateExtensions"]
         ),
+        .library(
+            name: "YearFeature",
+            targets: ["YearFeature"]
+        ),
     ],
     dependencies: [
         .package(
@@ -266,6 +270,23 @@ let package = Package(
                 .product(
                     name: "ComposableArchitecture",
                     package: "swift-composable-architecture"
+                )
+            ]
+        ),
+        .target(
+            name: "YearFeature",
+            dependencies: [
+                "DesignSystem",
+                "Models",
+                "PayClient",
+                "SharedStateExtensions",
+                .product(
+                    name: "ComposableArchitecture",
+                    package: "swift-composable-architecture"
+                ),
+                .product(
+                    name: "Dependencies",
+                    package: "swift-dependencies"
                 )
             ]
         ),

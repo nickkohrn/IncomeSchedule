@@ -11,7 +11,7 @@ public struct PayClient {
         case invalidDate
     }
     
-    public var year: @Sendable (_ selectedDate: Date, _ sources: [PaySource]) throws -> Year
+    public var year: @Sendable (_ selectedDate: Date, _ sources: Set<PaySource>) throws -> Year
 }
 
 extension PayClient: DependencyKey {
@@ -45,13 +45,10 @@ extension PayClient: DependencyKey {
                             throw Error.invalidDate
                         }
                         guard previousDate >= startOfYear else { break }
-                        dates.append(previousDate)
                         iterationDate = previousDate
                     }
-                    firstPayDateOfCurrentYear = iterationDate
-                } else if startOfYear > source.referencePayDate {
-                    var iterationDate = firstPayDateOfCurrentYear
-                    while startOfYear > iterationDate {
+                    dates.append(iterationDate)
+                    while iterationDate < startOfNextYear {
                         guard var nextDate = calendar.date(
                             byAdding: .weekOfMonth,
                             value: 2,
@@ -59,10 +56,34 @@ extension PayClient: DependencyKey {
                         ) else {
                             throw Error.invalidDate
                         }
-                        guard nextDate <= startOfNextYear else { break }
+                        guard nextDate < startOfNextYear else { break }
+                        dates.append(nextDate)
                         iterationDate = nextDate
                     }
-                    dates.append(iterationDate)
+                } else if source.referencePayDate < startOfYear {
+                    // If the reference pay date less-than the start of the year, then go
+                    // forward to the first pay date of the year.
+                    var iterationDate = source.referencePayDate
+                    while iterationDate < startOfYear {
+                        guard var nextDate = calendar.date(
+                            byAdding: .weekOfMonth,
+                            value: 2,
+                            to: iterationDate
+                        ) else {
+                            throw Error.invalidDate
+                        }
+                        guard nextDate < startOfYear else { break }
+                        iterationDate = nextDate
+                    }
+                    guard var nextDate = calendar.date(
+                        byAdding: .weekOfMonth,
+                        value: 2,
+                        to: iterationDate
+                    ) else {
+                        throw Error.invalidDate
+                    }
+                    dates.append(nextDate)
+                    iterationDate = nextDate
                     while iterationDate < startOfNextYear {
                         guard var nextDate = calendar.date(
                             byAdding: .weekOfMonth,
@@ -80,18 +101,10 @@ extension PayClient: DependencyKey {
                 }
             case .weekly:
                 if startOfYear < source.referencePayDate {
-                    print(
-                        "Source reference date:",
-                        source.referencePayDate.formatted(date: .abbreviated, time: .omitted)
-                    )
-                    print(
-                        "Start of year:",
-                        startOfYear.formatted(date: .abbreviated, time: .omitted)
-                    )
                     // If the start of the year is less-than the reference pay date, then go
                     // backward to the first pay date of the year.
                     var iterationDate = firstPayDateOfCurrentYear
-                    while startOfYear <= iterationDate {
+                    while startOfYear < iterationDate {
                         guard var previousDate = calendar.date(
                             byAdding: .weekOfMonth,
                             value: -1,
@@ -102,8 +115,7 @@ extension PayClient: DependencyKey {
                         guard previousDate >= startOfYear else { break }
                         iterationDate = previousDate
                     }
-                    firstPayDateOfCurrentYear = iterationDate
-                    dates.append(firstPayDateOfCurrentYear)
+                    dates.append(iterationDate)
                     while iterationDate < startOfNextYear {
                         guard var nextDate = calendar.date(
                             byAdding: .weekOfMonth,
@@ -112,13 +124,15 @@ extension PayClient: DependencyKey {
                         ) else {
                             throw Error.invalidDate
                         }
-                        guard nextDate <= startOfNextYear else { break }
+                        guard nextDate < startOfNextYear else { break }
                         dates.append(nextDate)
                         iterationDate = nextDate
                     }
-                } else if startOfYear > source.referencePayDate {
-                    var iterationDate = firstPayDateOfCurrentYear
-                    while startOfYear > iterationDate {
+                } else if source.referencePayDate < startOfYear {
+                    // If the reference pay date less-than the start of the year, then go
+                    // forward to the first pay date of the year.
+                    var iterationDate = source.referencePayDate
+                    while iterationDate < startOfYear {
                         guard var nextDate = calendar.date(
                             byAdding: .weekOfMonth,
                             value: 1,
@@ -126,10 +140,18 @@ extension PayClient: DependencyKey {
                         ) else {
                             throw Error.invalidDate
                         }
-                        guard nextDate <= startOfNextYear else { break }
+                        guard nextDate < startOfYear else { break }
                         iterationDate = nextDate
                     }
-                    dates.append(iterationDate)
+                    guard var nextDate = calendar.date(
+                        byAdding: .weekOfMonth,
+                        value: 1,
+                        to: iterationDate
+                    ) else {
+                        throw Error.invalidDate
+                    }
+                    dates.append(nextDate)
+                    iterationDate = nextDate
                     while iterationDate < startOfNextYear {
                         guard var nextDate = calendar.date(
                             byAdding: .weekOfMonth,
