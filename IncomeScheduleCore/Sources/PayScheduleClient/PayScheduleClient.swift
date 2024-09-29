@@ -6,42 +6,37 @@ import IdentifiedCollections
 import Models
 
 @DependencyClient
-public struct PayScheduleClient: Sendable {
+public struct PayClient {
     public enum Error: Swift.Error {
         case invalidDate
-        case unknown
     }
     
-    public var yearSchedule: @Sendable (
-        _ currentDate: Date,
-        _ paySchedule: PaySchedule
-    ) throws -> PayYearSchedule
+    public var year: @Sendable (_ selectedDate: Date, _ sources: [PaySource]) throws -> Year
 }
 
-extension PayScheduleClient: DependencyKey {
-    public static let liveValue: PayScheduleClient = {
+extension PayClient: DependencyKey {
+    public static let liveValue: PayClient = {
+        let calendar = Calendar.current
         @Sendable
-        func yearSchedule(currentDate: Date, paySchedule: PaySchedule) throws -> PayYearSchedule {
-            @Dependency(\.calendar) var calendar
-            var dates = [Date]()
-            // 1. Get the start of the year the current date.
-            guard let startOfCurrentYear = calendar.dateInterval(
-                of: .year,
-                for: currentDate
-            )?.start else {
+        func payDates(selectedDate: Date, source: PaySource) throws -> [PayDate] {
+            guard let yearInterval = calendar.dateInterval(of: .year, for: selectedDate) else {
                 throw Error.invalidDate
             }
-            // 2. Use the recorded pay date to go backwards by the specified frequency to the first
-            // pay date of the year for the current date.
-            let payDate = calendar.startOfDay(for: paySchedule.date)
+            // 1. Get the start and end of the year for the current date.
+            let startOfYear = yearInterval.start
+            let startOfNextYear = yearInterval.end
+            var dates = [Date]()
+            // 2. Use the reference pay date to go backwards by the specified frequency to the
+            // first pay date of the year for the current date.
+            let payDate = calendar.startOfDay(for: source.referencePayDate)
             var firstPayDateOfCurrentYear = payDate
-            switch paySchedule.frequency {
+            switch source.frequency {
             case .biWeekly:
-                // If the start of the current year is < the logged pay date, then go backward to
-                // the first pay date of the current year.
-                if startOfCurrentYear < paySchedule.date {
+                if startOfYear < source.referencePayDate {
+                    // If the start of the year is less-than the reference pay date, then go
+                    // backward to the first pay date of the year.
                     var iterationDate = firstPayDateOfCurrentYear
-                    while startOfCurrentYear < iterationDate {
+                    while startOfYear < iterationDate {
                         guard var previousDate = calendar.date(
                             byAdding: .weekOfMonth,
                             value: -2,
@@ -49,22 +44,14 @@ extension PayScheduleClient: DependencyKey {
                         ) else {
                             throw Error.invalidDate
                         }
-                        guard previousDate >= startOfCurrentYear else { break }
+                        guard previousDate >= startOfYear else { break }
+                        dates.append(previousDate)
                         iterationDate = previousDate
                     }
                     firstPayDateOfCurrentYear = iterationDate
-                // If the start of the current year is > the logged pay date, then go forward to
-                // the first pay date of the current year.
-                } else if startOfCurrentYear > paySchedule.date {
-                    guard let startOfNextYear = calendar.date(
-                        byAdding: .year,
-                        value: 1,
-                        to: startOfCurrentYear
-                    ) else {
-                        throw Error.invalidDate
-                    }
+                } else if startOfYear > source.referencePayDate {
                     var iterationDate = firstPayDateOfCurrentYear
-                    while startOfCurrentYear > iterationDate {
+                    while startOfYear > iterationDate {
                         guard var nextDate = calendar.date(
                             byAdding: .weekOfMonth,
                             value: 2,
@@ -75,16 +62,36 @@ extension PayScheduleClient: DependencyKey {
                         guard nextDate <= startOfNextYear else { break }
                         iterationDate = nextDate
                     }
-                    firstPayDateOfCurrentYear = iterationDate
+                    dates.append(iterationDate)
+                    while iterationDate < startOfNextYear {
+                        guard var nextDate = calendar.date(
+                            byAdding: .weekOfMonth,
+                            value: 2,
+                            to: iterationDate
+                        ) else {
+                            throw Error.invalidDate
+                        }
+                        guard nextDate < startOfNextYear else { break }
+                        dates.append(nextDate)
+                        iterationDate = nextDate
+                    }
                 } else {
                     // TODO: Handle this
                 }
             case .weekly:
-                // If the start of the current year is < the logged pay date, then go backward to
-                // the first pay date of the current year.
-                if startOfCurrentYear < paySchedule.date {
+                if startOfYear < source.referencePayDate {
+                    print(
+                        "Source reference date:",
+                        source.referencePayDate.formatted(date: .abbreviated, time: .omitted)
+                    )
+                    print(
+                        "Start of year:",
+                        startOfYear.formatted(date: .abbreviated, time: .omitted)
+                    )
+                    // If the start of the year is less-than the reference pay date, then go
+                    // backward to the first pay date of the year.
                     var iterationDate = firstPayDateOfCurrentYear
-                    while startOfCurrentYear < iterationDate {
+                    while startOfYear <= iterationDate {
                         guard var previousDate = calendar.date(
                             byAdding: .weekOfMonth,
                             value: -1,
@@ -92,22 +99,26 @@ extension PayScheduleClient: DependencyKey {
                         ) else {
                             throw Error.invalidDate
                         }
-                        guard previousDate >= startOfCurrentYear else { break }
+                        guard previousDate >= startOfYear else { break }
                         iterationDate = previousDate
                     }
                     firstPayDateOfCurrentYear = iterationDate
-                // If the start of the current year is > the logged pay date, then go forward to
-                // the first pay date of the current year.
-                } else if startOfCurrentYear > paySchedule.date {
-                    guard let startOfNextYear = calendar.date(
-                        byAdding: .year,
-                        value: 1,
-                        to: startOfCurrentYear
-                    ) else {
-                        throw Error.invalidDate
+                    dates.append(firstPayDateOfCurrentYear)
+                    while iterationDate < startOfNextYear {
+                        guard var nextDate = calendar.date(
+                            byAdding: .weekOfMonth,
+                            value: 1,
+                            to: iterationDate
+                        ) else {
+                            throw Error.invalidDate
+                        }
+                        guard nextDate <= startOfNextYear else { break }
+                        dates.append(nextDate)
+                        iterationDate = nextDate
                     }
+                } else if startOfYear > source.referencePayDate {
                     var iterationDate = firstPayDateOfCurrentYear
-                    while startOfCurrentYear > iterationDate {
+                    while startOfYear > iterationDate {
                         guard var nextDate = calendar.date(
                             byAdding: .weekOfMonth,
                             value: 1,
@@ -118,77 +129,76 @@ extension PayScheduleClient: DependencyKey {
                         guard nextDate <= startOfNextYear else { break }
                         iterationDate = nextDate
                     }
-                    firstPayDateOfCurrentYear = iterationDate
+                    dates.append(iterationDate)
+                    while iterationDate < startOfNextYear {
+                        guard var nextDate = calendar.date(
+                            byAdding: .weekOfMonth,
+                            value: 1,
+                            to: iterationDate
+                        ) else {
+                            throw Error.invalidDate
+                        }
+                        guard nextDate < startOfNextYear else { break }
+                        dates.append(nextDate)
+                        iterationDate = nextDate
+                    }
                 } else {
                     // TODO: Handle this
                 }
             }
-            // 3. Get all pay dates from the start of that year to the end of that year.
-            guard let startOfNextYear = calendar.date(
-                byAdding: .year,
-                value: 1,
-                to: startOfCurrentYear
-            ) else {
-                throw Error.invalidDate
+            return dates.map { date in
+                PayDate(date: date, source: source, uuid: UUID())
             }
-            switch paySchedule.frequency {
-            case .biWeekly:
-                // Get all bi-weekly dates in the current year.
-                var iterationDate = firstPayDateOfCurrentYear
-                dates.append(firstPayDateOfCurrentYear)
-                while iterationDate < startOfNextYear {
-                    guard let nextDate = calendar.date(
-                        byAdding: .weekOfMonth,
-                        value: 2,
-                        to: iterationDate
-                    ) else {
-                        throw Error.invalidDate
-                    }
-                    guard nextDate < startOfNextYear else { break }
-                    dates.append(nextDate)
-                    iterationDate = nextDate
-                }
-            case .weekly:
-                // Get all weekly dates in the current year.
-                var iterationDate = firstPayDateOfCurrentYear
-                while iterationDate < startOfNextYear {
-                    guard let nextDate = calendar.date(
-                        byAdding: .weekOfMonth,
-                        value: 1,
-                        to: iterationDate
-                    ) else {
-                        throw Error.invalidDate
-                    }
-                    guard nextDate < startOfNextYear else { break }
-                    dates.append(nextDate)
-                    iterationDate = nextDate
-                }
-            }
-            // Chunk all dates into months.
-            let chunkedByMonth = dates.chunked {
-                calendar.isDate($0, equalTo: $1, toGranularity: .month)
-            }
-            let arraysByMonth = chunkedByMonth.map(Array.init)
-            @Dependency(\.uuid) var uuid
-            let monthSchedules = arraysByMonth.map {
-                PayMonthSchedule(payDates: $0, uuid: uuid())
-            }
-            return PayYearSchedule(
-                monthSchedules: IdentifiedArray(uniqueElements: monthSchedules),
-                uuid: uuid()
-            )
         }
-        return PayScheduleClient(
-            yearSchedule: { currentDate, paySchedule in
-                return try yearSchedule(currentDate: currentDate, paySchedule: paySchedule)
+        
+        return PayClient(
+            year: {
+                selectedDate,
+                sources in
+                guard let selectedDateYearInterval = calendar.dateInterval(
+                    of: .year,
+                    for: selectedDate
+                ) else {
+                    throw Error.invalidDate
+                }
+                let startOfYear = selectedDateYearInterval.start
+                var combinedPayDates = [PayDate]()
+                for source in sources {
+                    let payDates = try payDates(selectedDate: selectedDate, source: source)
+                    combinedPayDates.append(contentsOf: payDates)
+                }
+                // Sort combined pay dates
+                let sortedPayDates = combinedPayDates.sorted { lhs, rhs in
+                    lhs.date < rhs.date
+                }
+                // Chunk pay dates by month
+                let chunkedByMonth = sortedPayDates.chunked { lhs, rhs in
+                    calendar.isDate(lhs.date, equalTo: rhs.date, toGranularity: .month)
+                }
+                let months: [Month] = chunkedByMonth.compactMap { chunk in
+                    guard
+                        let startDate = chunk.first?.date,
+                        let monthInterval = calendar.dateInterval(of: .month, for: startDate)
+                    else {
+                        return nil
+                    }
+                    return Month(
+                        monthStartDate: monthInterval.start,
+                        payDates: Array(chunk),
+                        uuid: UUID()
+                    )
+                }
+                return Year(yearStartDate: startOfYear, months: months, uuid: UUID())
             }
         )
     }()
 }
 
+extension PayClient: Sendable {}
+
 extension DependencyValues {
-    public var payScheduleClient: PayScheduleClient {
-        get { self[PayScheduleClient.self] }
-        set { self[PayScheduleClient.self] = newValue }
+    public var payClient: PayClient {
+        get { self[PayClient.self] }
+        set { self[PayClient.self] = newValue }
     }
 }
