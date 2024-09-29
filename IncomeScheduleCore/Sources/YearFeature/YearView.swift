@@ -21,6 +21,7 @@ public struct YearView: View {
                     } label: {
                         LabeledContent {
                             Text(month.coalescedPayDates.count.formatted())
+                                .bold(month.coalescedPayDates.count == store.year.maximumPays)
                         } label: {
                             HStack {
                                 Text(month.monthStartDate.formatted(
@@ -52,8 +53,8 @@ import SharedStateExtensions
     @Dependency(\.calendar) var calendar
     @Dependency(\.uuid) var uuid
     @Shared(.paySources) var paySources
-    paySources = Set<PaySource>(
-        arrayLiteral: PaySource(
+    paySources = Set<PaySource>([
+        PaySource(
             name: "Atomic Robot",
             frequency: .biWeekly,
             referencePayDate: calendar.date(from: DateComponents(
@@ -62,8 +63,18 @@ import SharedStateExtensions
                 day: 2
             ))!,
             uuid: uuid()
+        ),
+        PaySource(
+            name: "Lyft",
+            frequency: .weekly,
+            referencePayDate: calendar.date(from: DateComponents(
+                year: 2024,
+                month: 9,
+                day: 19
+            ))!,
+            uuid: uuid()
         )
-    )
+    ])
     return NavigationStack {
         YearView(
             store: StoreOf<YearReducer>(

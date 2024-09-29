@@ -5,6 +5,10 @@ public struct Year {
     public let months: [Month]
     public let uuid: UUID
     
+    public var maximumPays: Int {
+        months.map(\.coalescedPayDates.count).max() ?? 0
+    }
+    
     public init(yearStartDate: Date, months: [Month], uuid: UUID) {
         self.yearStartDate = yearStartDate
         self.months = months
