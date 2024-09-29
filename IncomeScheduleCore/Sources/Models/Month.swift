@@ -1,19 +1,25 @@
 import Foundation
-import IdentifiedCollections
-import Tagged
 
 public struct Month {
-    public typealias ID = Tagged<Self, Date>
+    public let monthStartDate: Date
+    public let payDates: [PayDate]
+    public let uuid: UUID
     
-    public let startDate: Date
-    public var payDates: IdentifiedArrayOf<PayDate>
+    public var coalescedPayDates: [CoalescedPayDate] {
+        var result: [Date: [PaySource]] = [:]
+        for payDate in payDates {
+            result[payDate.date, default: []].append(payDate.source)
+        }
+        let sortedByDate = result.sorted { $0.key < $1.key }
+        return sortedByDate.map { date, sources in
+            CoalescedPayDate(date: date, sources: sources, uuid: UUID())
+        }
+    }
     
-    public init(
-        startDate: Date,
-        payDates: IdentifiedArrayOf<PayDate>
-    ) {
-        self.startDate = startDate
+    public init(monthStartDate: Date, payDates: [PayDate], uuid: UUID) {
+        self.monthStartDate = monthStartDate
         self.payDates = payDates
+        self.uuid = uuid
     }
 }
 
@@ -22,7 +28,7 @@ extension Month: Equatable {}
 extension Month: Hashable {}
 
 extension Month: Identifiable {
-    public var id: ID { Tagged(startDate) }
+    public var id: UUID { uuid }
 }
 
 extension Month: Sendable {}

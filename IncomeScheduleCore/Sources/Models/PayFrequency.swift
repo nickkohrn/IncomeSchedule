@@ -3,19 +3,7 @@ import Foundation
 public enum PayFrequency {
     case weekly
     case biWeekly
-}
-
-extension PayFrequency: CaseIterable {}
-extension PayFrequency: Codable {}
-extension PayFrequency: Hashable {}
-
-extension PayFrequency: Identifiable {
-    public var id: String { name }
-}
-
-extension PayFrequency: Sendable {}
-
-extension PayFrequency {
+    
     public var name: String {
         switch self {
         case .weekly: "weekly"
@@ -23,3 +11,13 @@ extension PayFrequency {
         }
     }
 }
+
+extension PayFrequency: Codable {}
+extension PayFrequency: Equatable {}
+extension PayFrequency: Hashable {}
+
+extension PayFrequency: Identifiable {
+    public var id: String { name }
+}
+
+extension PayFrequency: Sendable {}

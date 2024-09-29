@@ -1,16 +1,14 @@
 import Foundation
-import IdentifiedCollections
-import Tagged
 
 public struct Year {
-    public typealias ID = Tagged<Self, Date>
+    public let yearStartDate: Date
+    public let months: [Month]
+    public let uuid: UUID
     
-    public let startDate: Date
-    public let months: IdentifiedArrayOf<Month>
-    
-    public init(startDate: Date, months: IdentifiedArrayOf<Month>) {
-        self.startDate = startDate
+    public init(yearStartDate: Date, months: [Month], uuid: UUID) {
+        self.yearStartDate = yearStartDate
         self.months = months
+        self.uuid = uuid
     }
 }
 
@@ -19,7 +17,7 @@ extension Year: Equatable {}
 extension Year: Hashable {}
 
 extension Year: Identifiable {
-    public var id: ID { Tagged(startDate) }
+    public var id: UUID { uuid }
 }
 
 extension Year: Sendable {}

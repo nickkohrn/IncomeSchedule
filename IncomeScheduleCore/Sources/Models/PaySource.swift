@@ -1,16 +1,15 @@
 import Foundation
-import Tagged
 
 public struct PaySource {
-    public typealias ID = Tagged<Self, UUID>
-    
     public let name: String
-    public let schedule: PaySchedule
+    public let frequency: PayFrequency
+    public let referencePayDate: Date
     public let uuid: UUID
     
-    public init(name: String, schedule: PaySchedule, uuid: UUID) {
+    public init(name: String, frequency: PayFrequency, referencePayDate: Date, uuid: UUID) {
         self.name = name
-        self.schedule = schedule
+        self.frequency = frequency
+        self.referencePayDate = referencePayDate
         self.uuid = uuid
     }
 }
@@ -20,7 +19,7 @@ extension PaySource: Equatable {}
 extension PaySource: Hashable {}
 
 extension PaySource: Identifiable {
-    public var id: ID { Tagged(uuid) }
+    public var id: UUID { uuid }
 }
 
 extension PaySource: Sendable {}
