@@ -35,12 +35,12 @@ let package = Package(
             targets: ["MonthScheduleDetailsFeature"]
         ),
         .library(
-            name: "PayScheduleFeature",
-            targets: ["PayScheduleFeature"]
+            name: "PayClient",
+            targets: ["PayClient"]
         ),
         .library(
-            name: "PayScheduleClient",
-            targets: ["PayScheduleClient"]
+            name: "PayScheduleFeature",
+            targets: ["PayScheduleFeature"]
         ),
         .library(
             name: "PaySourceFormFeature",
@@ -156,7 +156,7 @@ let package = Package(
             ]
         ),
         .target(
-            name: "PayScheduleClient",
+            name: "PayClient",
             dependencies: [
                 "Models",
                 .product(
@@ -183,7 +183,7 @@ let package = Package(
                 "CalendarClient",
                 "DesignSystem",
                 "Models",
-                "PayScheduleClient",
+                "PayClient",
                 "SharedStateExtensions",
                 .product(
                     name: "ComposableArchitecture",

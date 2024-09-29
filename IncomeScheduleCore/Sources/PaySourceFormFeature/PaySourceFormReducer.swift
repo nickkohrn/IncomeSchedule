@@ -34,7 +34,12 @@ public struct PaySourceFormReducer {
     }
     
     public enum Action: BindableAction {
+        public enum Delegate {
+            case didSave
+        }
+        
         case binding(BindingAction<State>)
+        case delegate(Delegate)
         case onAppear
         case selectedDate(Date)
         case setName(String)
@@ -47,6 +52,9 @@ public struct PaySourceFormReducer {
         Reduce { state, action in
             switch action {
             case .binding:
+                return .none
+                
+            case .delegate:
                 return .none
                 
             case .onAppear:
@@ -68,14 +76,12 @@ public struct PaySourceFormReducer {
                 @Dependency(\.uuid) var uuid
                 let source = PaySource(
                     name: state.name,
-                    schedule: PaySchedule(
-                        date: state.date,
-                        frequency: state.frequency
-                    ),
+                    frequency: state.frequency,
+                    referencePayDate: state.date,
                     uuid: uuid()
                 )
-                state.paySources.sources.append(source)
-                return .none
+                state.paySources.insert(source)
+                return .send(.delegate(.didSave))
             }
         }
     }

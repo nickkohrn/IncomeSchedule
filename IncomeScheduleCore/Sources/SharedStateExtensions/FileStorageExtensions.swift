@@ -3,7 +3,7 @@ import FileManagerClient
 import Foundation
 import Models
 
-extension PersistenceReaderKey where Self == FileStorageKey<PaySources> {
+extension PersistenceReaderKey where Self == FileStorageKey<Set<PaySource>> {
     public static var paySources: Self {
         @Dependency(\.fileManagerClient) var fileManagerClient
         do {
@@ -16,11 +16,8 @@ extension PersistenceReaderKey where Self == FileStorageKey<PaySources> {
 }
 
 
-extension PersistenceReaderKey where Self == PersistenceKeyDefault<FileStorageKey<PaySources>> {
+extension PersistenceReaderKey where Self == PersistenceKeyDefault<FileStorageKey<Set<PaySource>>> {
     public static var paySources: Self {
-        PersistenceKeyDefault(
-            .paySources,
-            PaySources(sources: [])
-        )
+        PersistenceKeyDefault(.paySources, [])
     }
 }

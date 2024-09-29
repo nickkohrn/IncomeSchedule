@@ -12,6 +12,7 @@ public enum PayFrequency {
     }
 }
 
+extension PayFrequency: CaseIterable {}
 extension PayFrequency: Codable {}
 extension PayFrequency: Equatable {}
 extension PayFrequency: Hashable {}
