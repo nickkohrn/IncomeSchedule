@@ -174,9 +174,8 @@ extension PayClient: DependencyKey {
         }
         
         return PayClient(
-            year: {
-                selectedDate,
-                sources in
+            year: {selectedDate, sources in
+                @Dependency(\.date.now) var now
                 guard let selectedDateYearInterval = calendar.dateInterval(
                     of: .year,
                     for: selectedDate
@@ -204,7 +203,13 @@ extension PayClient: DependencyKey {
                     else {
                         return nil
                     }
+                    let isCurrentMonth = calendar.isDate(
+                        monthInterval.start,
+                        equalTo: now,
+                        toGranularity: .month
+                    )
                     return Month(
+                        isCurrentMonth: isCurrentMonth,
                         monthStartDate: monthInterval.start,
                         payDates: Array(chunk),
                         uuid: UUID()

@@ -5,7 +5,8 @@ import ScheduleCreationFeature
 import SwiftUI
 
 public struct YearView: View {
-    @Bindable public var store: StoreOf<YearReducer>
+    @Bindable private var store: StoreOf<YearReducer>
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     
     public init(store: StoreOf<YearReducer>) {
         self.store = store
@@ -15,13 +16,27 @@ public struct YearView: View {
         List {
             Section {
                 ForEach(store.year.months) { month in
-                    Text(month.monthStartDate.formatted(.dateTime.month(.wide)))
+                    Button {
+                        
+                    } label: {
+                        HStack {
+                            Text(month.monthStartDate.formatted(
+                                .dateTime.month(
+                                    dynamicTypeSize.isAccessibilitySize ? .abbreviated : .wide
+                                )
+                            ))
+                            if month.isCurrentMonth {
+                                Image(systemName: "circle.fill")
+                                    .imageScale(.small)
+                                    .foregroundStyle(.tertiary)
+                                    .scaleEffect(0.75)
+                            }
+                        }
+                    }
                 }
-            } header: {
-                Text(store.year.yearStartDate.formatted(.dateTime.year()))
             }
-            .headerProminence(.increased)
         }
+        .navigationTitle(Text(store.year.yearStartDate.formatted(.dateTime.year())))
         .onAppear { store.send(.onAppear) }
     }
 }

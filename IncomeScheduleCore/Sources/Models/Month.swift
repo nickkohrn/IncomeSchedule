@@ -1,6 +1,7 @@
 import Foundation
 
 public struct Month {
+    public let isCurrentMonth: Bool
     public let monthStartDate: Date
     public let payDates: [PayDate]
     public let uuid: UUID
@@ -16,7 +17,8 @@ public struct Month {
         }
     }
     
-    public init(monthStartDate: Date, payDates: [PayDate], uuid: UUID) {
+    public init(isCurrentMonth: Bool, monthStartDate: Date, payDates: [PayDate], uuid: UUID) {
+        self.isCurrentMonth = isCurrentMonth
         self.monthStartDate = monthStartDate
         self.payDates = payDates
         self.uuid = uuid
