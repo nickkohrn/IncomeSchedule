@@ -19,17 +19,21 @@ public struct YearView: View {
                     Button {
                         
                     } label: {
-                        HStack {
-                            Text(month.monthStartDate.formatted(
-                                .dateTime.month(
-                                    dynamicTypeSize.isAccessibilitySize ? .abbreviated : .wide
-                                )
-                            ))
-                            if month.isCurrentMonth {
-                                Image(systemName: "circle.fill")
-                                    .imageScale(.small)
-                                    .foregroundStyle(.tertiary)
-                                    .scaleEffect(0.75)
+                        LabeledContent {
+                            Text(month.coalescedPayDates.count.formatted())
+                        } label: {
+                            HStack {
+                                Text(month.monthStartDate.formatted(
+                                    .dateTime.month(
+                                        dynamicTypeSize.isAccessibilitySize ? .abbreviated : .wide
+                                    )
+                                ))
+                                if month.isCurrentMonth {
+                                    Image(systemName: "circle.fill")
+                                        .imageScale(.small)
+                                        .foregroundStyle(.tertiary)
+                                        .scaleEffect(0.75)
+                                }
                             }
                         }
                     }
