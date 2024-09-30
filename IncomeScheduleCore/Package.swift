@@ -279,6 +279,7 @@ let package = Package(
                 "DesignSystem",
                 "Models",
                 "PayClient",
+                "PaySourceFormFeature",
                 "SharedStateExtensions",
                 .product(
                     name: "ComposableArchitecture",

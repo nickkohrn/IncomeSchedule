@@ -2,12 +2,19 @@ import ComposableArchitecture
 import Foundation
 import Models
 import PayClient
+import PaySourceFormFeature
 import SharedStateExtensions
 
 @Reducer
 public struct YearReducer {
+    @Reducer(state: .hashable)
+    public enum Destination {
+        case paySourceForm(PaySourceFormReducer)
+    }
+    
     @ObservableState
     public struct State: Equatable {
+        @Presents public var destination: Destination.State?
         public var selectedDate: Date
         public var year: Year
         @Shared(.paySources) public var paySources
@@ -21,7 +28,9 @@ public struct YearReducer {
     
     public enum Action: BindableAction {
         case binding(BindingAction<State>)
+        case destination(PresentationAction<Destination.Action>)
         case onAppear
+        case tappedAddPaySourceButton
     }
     
     public var body: some ReducerOf<Self> {
@@ -31,10 +40,26 @@ public struct YearReducer {
             case .binding:
                 return .none
                 
+            case .destination(.presented(.paySourceForm(.delegate(.didCancel)))):
+                state.destination = nil
+                return .none
+            
+            case .destination(.presented(.paySourceForm(.delegate(.didSave)))):
+                state.destination = nil
+                return calculateYear(state: &state)
+                
+            case .destination:
+                return .none
+                
             case .onAppear:
                 return calculateYear(state: &state)
+                
+            case .tappedAddPaySourceButton:
+                state.destination = .paySourceForm(PaySourceFormReducer.State())
+                return .none
             }
         }
+        .ifLet(\.$destination, action: \.destination)
     }
     
     public init() {}

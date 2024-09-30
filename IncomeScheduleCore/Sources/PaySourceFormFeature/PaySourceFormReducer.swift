@@ -35,6 +35,7 @@ public struct PaySourceFormReducer {
     
     public enum Action: BindableAction {
         public enum Delegate {
+            case didCancel
             case didSave
         }
         
@@ -70,7 +71,7 @@ public struct PaySourceFormReducer {
                 return .none
                 
             case .tappedCancelButton:
-                return .none
+                return .send(.delegate(.didCancel))
                 
             case .tappedSaveButton:
                 @Dependency(\.uuid) var uuid
