@@ -23,6 +23,23 @@ public struct YearReducer {
         public var year: Year
         @Shared(.paySources) public var paySources
         
+        public var currentMonth: Month? {
+            @Dependency(\.calendar) var calendar
+            @Dependency(\.date.now) var now
+            return year.months.first(where: { month in
+                month.payDates.contains(where: { payDate in
+                    calendar.isDate(payDate.date, equalTo: now, toGranularity: .month)
+                })
+            })
+        }
+        
+        public var isCurrentYear: Bool {
+            @Dependency(\.calendar) var calendar
+            @Dependency(\.date.now) var now
+            guard let firstDate = year.months.first?.monthStartDate else { return false }
+            return calendar.isDate(firstDate, equalTo: now, toGranularity: .year)
+        }
+        
         public init(selectedDate: Date = .now) {
             @Dependency(\.uuid) var uuid
             self.selectedDate = selectedDate

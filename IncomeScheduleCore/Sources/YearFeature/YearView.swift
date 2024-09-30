@@ -28,6 +28,25 @@ public struct YearView: View {
                 }
             } else {
                 List {
+                    if store.isCurrentYear, let currentMonth = store.currentMonth {
+                        Section {
+                            Button {
+                                store.send(.tappedMonthButton(currentMonth))
+                            } label: {
+                                LabeledContent {
+                                    Text(currentMonth.coalescedPayDates.count.formatted())
+                                } label: {
+                                    Text(currentMonth.monthStartDate.formatted(
+                                        .dateTime.month(
+                                            dynamicTypeSize.isAccessibilitySize ? .abbreviated : .wide
+                                        )
+                                    ))
+                                }
+                            }
+                        } header: {
+                            Text("This Month")
+                        }
+                    }
                     Section {
                         ForEach(store.year.months) { month in
                             Button {
@@ -52,14 +71,19 @@ public struct YearView: View {
                                         ))
                                     }
                                 }
-                                .fontWeight(month.isCurrentMonth ? .bold : .regular)
                             }
+                        }
+                    } header: {
+                        if store.isCurrentYear {
+                            Text("This Year")
+                        } else {
+                            Text(store.year.yearStartDate.formatted(.dateTime.year()))
                         }
                     }
                 }
             }
         }
-        .navigationTitle(Text(store.year.yearStartDate.formatted(.dateTime.year())))
+        .navigationTitle(Text("Pay Schedule"))
         .onAppear { store.send(.onAppear) }
         .toolbar {
             ToolbarItem(placement: .navigation) {
