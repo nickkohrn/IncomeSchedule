@@ -47,6 +47,10 @@ let package = Package(
             targets: ["PayScheduleFeature"]
         ),
         .library(
+            name: "PaySourceDetailsFeature",
+            targets: ["PaySourceDetailsFeature"]
+        ),
+        .library(
             name: "PaySourceFormFeature",
             targets: ["PaySourceFormFeature"]
         ),
@@ -223,6 +227,21 @@ let package = Package(
             ]
         ),
         .target(
+            name: "PaySourceDetailsFeature",
+            dependencies: [
+                "DesignSystem",
+                "Models",
+                .product(
+                    name: "ComposableArchitecture",
+                    package: "swift-composable-architecture"
+                ),
+                .product(
+                    name: "Dependencies",
+                    package: "swift-dependencies"
+                )
+            ]
+        ),
+        .target(
             name: "PaySourceFormFeature",
             dependencies: [
                 "DesignSystem",
@@ -243,6 +262,7 @@ let package = Package(
             dependencies: [
                 "DesignSystem",
                 "Models",
+                "PaySourceDetailsFeature",
                 "SharedStateExtensions",
                 .product(
                     name: "ComposableArchitecture",

@@ -2,10 +2,11 @@ import ComposableArchitecture
 import DesignSystem
 import Foundation
 import Models
+import PaySourceDetailsFeature
 import SwiftUI
 
 public struct PaySourcesView: View {
-    private let store: StoreOf<PaySourcesReducer>
+    @Bindable private var store: StoreOf<PaySourcesReducer>
     
     public init(store: StoreOf<PaySourcesReducer>) {
         self.store = store
@@ -39,6 +40,15 @@ public struct PaySourcesView: View {
                 CloseButton { store.send(.tappedCloseButton) }
             }
         }
+        .navigationDestination(
+            item: $store.scope(
+                state: \.destination?.paySourceDetails,
+                action: \.destination.paySourceDetails
+            )
+        ) { store in
+            PaySourceDetailsView(store: store)
+        }
+
     }
 }
 
