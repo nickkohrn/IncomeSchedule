@@ -5,8 +5,14 @@ public struct Year {
     public let months: [Month]
     public let uuid: UUID
     
-    public var maximumPays: Int {
+    public var maximumPayCount: Int {
         months.map(\.coalescedPayDates.count).max() ?? 0
+    }
+    
+    public var maximumPayMonths: [Month] {
+        months.filter { month in
+            month.coalescedPayDates.count == maximumPayCount
+        }
     }
     
     public init(yearStartDate: Date, months: [Month], uuid: UUID) {

@@ -20,8 +20,15 @@ public struct YearView: View {
                         
                     } label: {
                         LabeledContent {
-                            Text(month.coalescedPayDates.count.formatted())
-                                .bold(month.coalescedPayDates.count == store.year.maximumPays)
+                            HStack {
+                                if store.year.maximumPayMonths.contains(month) {
+                                    Image(systemName: "arrowtriangle.forward.fill")
+                                        .imageScale(.small)
+                                        .foregroundStyle(.tertiary)
+                                        .scaleEffect(0.75)
+                                }
+                                Text(month.coalescedPayDates.count.formatted())
+                            }
                         } label: {
                             HStack {
                                 Text(month.monthStartDate.formatted(
