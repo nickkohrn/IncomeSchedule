@@ -31,6 +31,10 @@ let package = Package(
             targets: ["Models"]
         ),
         .library(
+            name: "MonthDetailsFeature",
+            targets: ["MonthDetailsFeature"]
+        ),
+        .library(
             name: "MonthScheduleDetailsFeature",
             targets: ["MonthScheduleDetailsFeature"]
         ),
@@ -141,6 +145,21 @@ let package = Package(
                 .product(
                     name: "Tagged",
                     package: "swift-tagged"
+                )
+            ]
+        ),
+        .target(
+            name: "MonthDetailsFeature",
+            dependencies: [
+                "DesignSystem",
+                "Models",
+                .product(
+                    name: "ComposableArchitecture",
+                    package: "swift-composable-architecture"
+                ),
+                .product(
+                    name: "Dependencies",
+                    package: "swift-dependencies"
                 )
             ]
         ),
@@ -278,6 +297,7 @@ let package = Package(
             dependencies: [
                 "DesignSystem",
                 "Models",
+                "MonthDetailsFeature",
                 "PayClient",
                 "PaySourceFormFeature",
                 "SharedStateExtensions",

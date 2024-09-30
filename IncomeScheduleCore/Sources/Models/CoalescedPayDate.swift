@@ -5,6 +5,12 @@ public struct CoalescedPayDate {
     public let sources: [PaySource]
     public let uuid: UUID
     
+    public var sortedSourceNames: [String] {
+        sources.map(\.name).sorted { lhs, rhs in
+            lhs.localizedStandardCompare(rhs) == .orderedAscending
+        }
+    }
+    
     public init(date: Date, sources: [PaySource], uuid: UUID) {
         self.date = date
         self.sources = sources

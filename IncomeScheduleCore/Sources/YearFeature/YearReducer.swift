@@ -1,6 +1,7 @@
 import ComposableArchitecture
 import Foundation
 import Models
+import MonthDetailsFeature
 import PayClient
 import PaySourceFormFeature
 import SharedStateExtensions
@@ -9,6 +10,7 @@ import SharedStateExtensions
 public struct YearReducer {
     @Reducer(state: .hashable)
     public enum Destination {
+        case monthDetails(MonthDetailsReducer)
         case paySourceForm(PaySourceFormReducer)
     }
     
@@ -31,6 +33,7 @@ public struct YearReducer {
         case destination(PresentationAction<Destination.Action>)
         case onAppear
         case tappedAddPaySourceButton
+        case tappedMonth(Month)
     }
     
     public var body: some ReducerOf<Self> {
@@ -38,6 +41,10 @@ public struct YearReducer {
         Reduce { state, action in
             switch action {
             case .binding:
+                return .none
+                
+            case .destination(.presented(.monthDetails(.delegate(.didClose)))):
+                state.destination = nil
                 return .none
                 
             case .destination(.presented(.paySourceForm(.delegate(.didCancel)))):
@@ -56,6 +63,10 @@ public struct YearReducer {
                 
             case .tappedAddPaySourceButton:
                 state.destination = .paySourceForm(PaySourceFormReducer.State())
+                return .none
+                
+            case .tappedMonth(let month):
+                state.destination = .monthDetails(MonthDetailsReducer.State(month: month))
                 return .none
             }
         }

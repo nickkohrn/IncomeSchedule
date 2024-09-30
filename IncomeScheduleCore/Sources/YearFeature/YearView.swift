@@ -1,6 +1,6 @@
 import ComposableArchitecture
 import Models
-import MonthScheduleDetailsFeature
+import MonthDetailsFeature
 import PaySourceFormFeature
 import SwiftUI
 
@@ -30,7 +30,7 @@ public struct YearView: View {
                     Section {
                         ForEach(store.year.months) { month in
                             Button {
-                                
+                                store.send(.tappedMonth(month))
                             } label: {
                                 LabeledContent {
                                     HStack {
@@ -83,6 +83,17 @@ public struct YearView: View {
         }
         .sheet(
             item: $store.scope(
+                state: \.destination?.monthDetails,
+                action: \.destination.monthDetails
+            )
+        ) { store in
+            NavigationStack {
+                MonthDetailsView(store: store)
+            }
+            .presentationDetents([.medium, .large])
+        }
+        .sheet(
+            item: $store.scope(
                 state: \.destination?.paySourceForm,
                 action: \.destination.paySourceForm
             )
@@ -106,9 +117,9 @@ import SharedStateExtensions
             name: "Atomic Robot",
             frequency: .biWeekly,
             referencePayDate: calendar.date(from: DateComponents(
-                year: 2022,
+                year: 2024,
                 month: 9,
-                day: 2
+                day: 20
             ))!,
             uuid: uuid()
         ),
