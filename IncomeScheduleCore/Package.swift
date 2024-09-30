@@ -231,6 +231,7 @@ let package = Package(
             dependencies: [
                 "DesignSystem",
                 "Models",
+                "PaySourceFormFeature",
                 .product(
                     name: "ComposableArchitecture",
                     package: "swift-composable-architecture"

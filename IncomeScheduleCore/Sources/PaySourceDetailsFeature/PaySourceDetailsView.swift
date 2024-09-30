@@ -2,10 +2,11 @@ import ComposableArchitecture
 import DesignSystem
 import Foundation
 import Models
+import PaySourceFormFeature
 import SwiftUI
 
 public struct PaySourceDetailsView: View {
-    private let store: StoreOf<PaySourceDetailsReducer>
+    @Bindable private var store: StoreOf<PaySourceDetailsReducer>
     
     public init(store: StoreOf<PaySourceDetailsReducer>) {
         self.store = store
@@ -18,6 +19,21 @@ public struct PaySourceDetailsView: View {
         }
         .navigationTitle(Text("Pay Source"))
         .onAppear { store.send(.onAppear) }
+        .toolbar {
+            ToolbarItem(placement: .primaryAction) {
+                Button("Edit") { store.send(.tappedEditButton) }
+            }
+        }
+        .sheet(
+            item: $store.scope(
+                state: \.destination?.paySourceForm,
+                action: \.destination.paySourceForm
+            )
+        ) { store in
+            NavigationStack {
+                PaySourceFormView(store: store)
+            }
+        }
     }
 }
 

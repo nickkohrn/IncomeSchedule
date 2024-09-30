@@ -86,7 +86,7 @@ public struct YearReducer {
                 return calculateYear(state: &state)
                 
             case .tappedAddPaySourceButton:
-                state.destination = .paySourceForm(PaySourceFormReducer.State())
+                state.destination = .paySourceForm(PaySourceFormReducer.State(paySource: nil))
                 return .none
                 
             case .tappedMonthButton(let month):

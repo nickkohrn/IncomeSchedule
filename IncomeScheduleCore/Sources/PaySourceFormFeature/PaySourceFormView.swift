@@ -60,7 +60,7 @@ public struct PaySourceFormView: View {
     NavigationStack {
         PaySourceFormView(
             store: StoreOf<PaySourceFormReducer>(
-                initialState: PaySourceFormReducer.State(),
+                initialState: PaySourceFormReducer.State(paySource: nil),
                 reducer: { PaySourceFormReducer() }
             )
         )

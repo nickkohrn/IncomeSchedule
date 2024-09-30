@@ -10,23 +10,37 @@ public struct PaySourceFormReducer {
         public var date: Date
         public var frequency: PayFrequency
         public var name: String
+        public var paySource: PaySource?
         @Shared(.paySources) public var paySources
         
         public var isFormValid: Bool {
-            !name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+            if let paySource {
+                @Dependency(\.calendar) var calendar
+                let existingDate = calendar.startOfDay(for: paySource.referencePayDate)
+                let newDate = calendar.startOfDay(for: date)
+                let isDateDifferent = existingDate != newDate
+                let isFrequencyDifferent = paySource.frequency != frequency
+                let existingName = paySource.name.trimmingCharacters(in: .whitespacesAndNewlines)
+                let newName = name.trimmingCharacters(in: .whitespacesAndNewlines)
+                let isNameDifferent = existingName != newName
+                return isDateDifferent
+                || isFrequencyDifferent
+                || isNameDifferent
+            } else {
+                return !name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+            }
         }
         
-        public init(
-            date: Date = .now,
-            frequency: PayFrequency = .weekly,
-            name: String = ""
-        ) {
-            self.date = date
-            self.frequency = frequency
-            self.name = name
+        public init(paySource: PaySource?) {
+            @Dependency(\.date.now) var now
+            self.paySource = paySource
+            self.date = paySource?.referencePayDate ?? now
+            self.frequency = paySource?.frequency ?? .weekly
+            self.name = paySource?.name ?? ""
         }
         
         public func hash(into hasher: inout Hasher) {
+            hasher.combine(paySource)
             hasher.combine(date)
             hasher.combine(frequency)
             hasher.combine(name)
@@ -74,14 +88,18 @@ public struct PaySourceFormReducer {
                 return .send(.delegate(.didCancel))
                 
             case .tappedSaveButton:
-                @Dependency(\.uuid) var uuid
-                let source = PaySource(
-                    name: state.name,
-                    frequency: state.frequency,
-                    referencePayDate: state.date,
-                    uuid: uuid()
-                )
-                state.paySources.insert(source)
+                if let paySource = state.paySource {
+#warning("Update existing pay source")
+                } else {
+                    @Dependency(\.uuid) var uuid
+                    let source = PaySource(
+                        name: state.name,
+                        frequency: state.frequency,
+                        referencePayDate: state.date,
+                        uuid: uuid()
+                    )
+                    state.paySources.insert(source)
+                }
                 return .send(.delegate(.didSave))
             }
         }
