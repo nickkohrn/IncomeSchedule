@@ -51,6 +51,10 @@ let package = Package(
             targets: ["PaySourceFormFeature"]
         ),
         .library(
+            name: "PaySourcesFeature",
+            targets: ["PaySourcesFeature"]
+        ),
+        .library(
             name: "ScheduleClient",
             targets: ["ScheduleClient"]
         ),
@@ -235,6 +239,22 @@ let package = Package(
             ]
         ),
         .target(
+            name: "PaySourcesFeature",
+            dependencies: [
+                "DesignSystem",
+                "Models",
+                "SharedStateExtensions",
+                .product(
+                    name: "ComposableArchitecture",
+                    package: "swift-composable-architecture"
+                ),
+                .product(
+                    name: "Dependencies",
+                    package: "swift-dependencies"
+                )
+            ]
+        ),
+        .target(
             name: "ScheduleClient",
             dependencies: [
                 "Models",
@@ -300,6 +320,7 @@ let package = Package(
                 "MonthDetailsFeature",
                 "PayClient",
                 "PaySourceFormFeature",
+                "PaySourcesFeature",
                 "SharedStateExtensions",
                 .product(
                     name: "ComposableArchitecture",

@@ -4,6 +4,7 @@ import Models
 import MonthDetailsFeature
 import PayClient
 import PaySourceFormFeature
+import PaySourcesFeature
 import SharedStateExtensions
 
 @Reducer
@@ -12,6 +13,7 @@ public struct YearReducer {
     public enum Destination {
         case monthDetails(MonthDetailsReducer)
         case paySourceForm(PaySourceFormReducer)
+        case paySources(PaySourcesReducer)
     }
     
     @ObservableState
@@ -33,7 +35,8 @@ public struct YearReducer {
         case destination(PresentationAction<Destination.Action>)
         case onAppear
         case tappedAddPaySourceButton
-        case tappedMonth(Month)
+        case tappedMonthButton(Month)
+        case tappedViewPaySourcesButton
     }
     
     public var body: some ReducerOf<Self> {
@@ -55,6 +58,10 @@ public struct YearReducer {
                 state.destination = nil
                 return calculateYear(state: &state)
                 
+            case .destination(.presented(.paySources(.delegate(.didClose)))):
+                state.destination = nil
+                return .none
+                
             case .destination:
                 return .none
                 
@@ -65,8 +72,12 @@ public struct YearReducer {
                 state.destination = .paySourceForm(PaySourceFormReducer.State())
                 return .none
                 
-            case .tappedMonth(let month):
+            case .tappedMonthButton(let month):
                 state.destination = .monthDetails(MonthDetailsReducer.State(month: month))
+                return .none
+                
+            case .tappedViewPaySourcesButton:
+                state.destination = .paySources(PaySourcesReducer.State())
                 return .none
             }
         }

@@ -2,6 +2,7 @@ import ComposableArchitecture
 import Models
 import MonthDetailsFeature
 import PaySourceFormFeature
+import PaySourcesFeature
 import SwiftUI
 
 public struct YearView: View {
@@ -30,7 +31,7 @@ public struct YearView: View {
                     Section {
                         ForEach(store.year.months) { month in
                             Button {
-                                store.send(.tappedMonth(month))
+                                store.send(.tappedMonthButton(month))
                             } label: {
                                 LabeledContent {
                                     HStack {
@@ -49,14 +50,9 @@ public struct YearView: View {
                                                 dynamicTypeSize.isAccessibilitySize ? .abbreviated : .wide
                                             )
                                         ))
-                                        if month.isCurrentMonth {
-                                            Image(systemName: "circle.fill")
-                                                .imageScale(.small)
-                                                .foregroundStyle(.tertiary)
-                                                .scaleEffect(0.75)
-                                        }
                                     }
                                 }
+                                .fontWeight(month.isCurrentMonth ? .bold : .regular)
                             }
                         }
                     }
@@ -66,7 +62,6 @@ public struct YearView: View {
         .navigationTitle(Text(store.year.yearStartDate.formatted(.dateTime.year())))
         .onAppear { store.send(.onAppear) }
         .toolbar {
-            // this is a primary action, so will always be visible
             ToolbarItem(placement: .navigation) {
                 Button("Settings", systemImage: "gearshape") {
                     
@@ -78,7 +73,11 @@ public struct YearView: View {
                 } label: {
                     Label("Add Pay Source", systemImage: "plus")
                 }
-
+                Button {
+                    store.send(.tappedViewPaySourcesButton)
+                } label: {
+                    Label("View Pay Sources", systemImage: "eye")
+                }
             }
         }
         .sheet(
@@ -100,6 +99,16 @@ public struct YearView: View {
         ) { store in
             NavigationStack {
                 PaySourceFormView(store: store)
+            }
+        }
+        .sheet(
+            item: $store.scope(
+                state: \.destination?.paySources,
+                action: \.destination.paySources
+            )
+        ) { store in
+            NavigationStack {
+                PaySourcesView(store: store)
             }
         }
     }
