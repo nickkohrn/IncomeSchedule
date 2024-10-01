@@ -13,19 +13,38 @@ public struct PaySourceDetailsView: View {
     }
     
     public var body: some View {
-        List {
+        VStack {
             if let paySource = store.paySource {
-                LabeledContent("Source", value: paySource.name)
-                LabeledContent("Frequency", value: paySource.frequency.name)
+                List {
+                    LabeledContent("Source", value: paySource.name)
+                    LabeledContent("Frequency", value: paySource.frequency.name)
+                }
+            } else {
+                ContentUnavailableView(
+                    "Pay Source Unavailable",
+                    systemImage: "questionmark.circle",
+                    description: Text("There was a problem retrieving your pay source")
+                )
             }
         }
         .navigationTitle(Text("Pay Source"))
         .onAppear { store.send(.onAppear) }
         .toolbar {
-            ToolbarItem(placement: .primaryAction) {
-                Button("Edit") { store.send(.tappedEditButton) }
+            if let _ = store.paySource {
+                ToolbarItem(placement: .primaryAction) {
+                    Button("Edit") { store.send(.tappedEditButton) }
+                }
+                ToolbarItem(placement: .bottomBar) {
+                    Button("Delete", systemImage: "trash") {
+                        store.send(.tappedDeleteButton)
+                    }
+                }
             }
         }
+        .confirmationDialog($store.scope(
+            state: \.destination?.confirmationDialog,
+            action: \.destination.confirmationDialog
+        ))
         .sheet(
             item: $store.scope(
                 state: \.destination?.paySourceForm,

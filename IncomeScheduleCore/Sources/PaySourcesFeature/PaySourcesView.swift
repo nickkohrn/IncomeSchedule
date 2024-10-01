@@ -34,6 +34,7 @@ public struct PaySourcesView: View {
                 }
             }
         }
+        .animation(.default, value: store.paySources)
         .navigationTitle(Text("Pay Sources"))
         .onAppear { store.send(.onAppear) }
         .toolbar {

@@ -37,6 +37,7 @@ public struct PaySourcesReducer {
         
         case binding(BindingAction<State>)
         case delegate(Delegate)
+        case deletePaySource(PaySource.ID)
         case destination(PresentationAction<Destination.Action>)
         case onAppear
         case tappedAddButton
@@ -53,6 +54,18 @@ public struct PaySourcesReducer {
                 
             case .delegate:
                 return .none
+                
+            case .deletePaySource(let sourceID):
+                state.paySources[id: sourceID] = nil
+                return .none
+                
+            case .destination(.presented(.paySourceDetails(.delegate(.deletePaySource(let sourceID))))):
+                state.destination = nil
+                return .run { send in
+                    @Dependency(\.continuousClock) var clock
+                    try? await clock.sleep(for: .seconds(0.5))
+                    await send(.deletePaySource(sourceID))
+                }
                 
             case .destination(.presented(.paySourceForm(.delegate(.didCancel)))):
                 state.destination = nil
