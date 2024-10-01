@@ -29,7 +29,9 @@ public struct YearView: View {
                 }
             } else {
                 List {
-                    if store.isCurrentYear, let currentMonth = store.currentMonth {
+                    if store.isCurrentYear,
+                       let currentMonth = store.currentMonth,
+                       store.showCurrentMonthProminently {
                         Section {
                             Button {
                                 store.send(.tappedMonthButton(currentMonth))
@@ -87,11 +89,7 @@ public struct YearView: View {
                             }
                         }
                     } header: {
-                        if store.isCurrentYear {
-                            Text("This Year")
-                        } else {
-                            Text(store.year.yearStartDate.formatted(.dateTime.year()))
-                        }
+                        Text(store.year.yearStartDate.formatted(.dateTime.year()))
                     }
                 }
             }

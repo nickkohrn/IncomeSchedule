@@ -23,6 +23,17 @@ public struct SettingsView: View {
             } footer: {
                 Text("If enabled, a symbol will indicate months with the highest pay count.")
             }
+            Section {
+                Toggle(isOn: $store.showCurrentMonthProminently.sending(\.toggledShowCurrentMonthProminently)) {
+                    Label {
+                        Text("Prominent Current Month")
+                    } icon: {
+                        Image(systemName: "inset.filled.topthird.rectangle.portrait")
+                    }
+                }
+            } footer: {
+                Text("If enabled, the current month will be shown at the top of the list.")
+            }
         }
         .navigationTitle(Text("Settings"))
         .onAppear { store.send(.onAppear) }

@@ -6,6 +6,7 @@ import SharedStateExtensions
 public struct SettingsReducer {
     @ObservableState
     public struct State: Equatable, Hashable {
+        @Shared(.showCurrentMonthProminently) public var showCurrentMonthProminently
         @Shared(.showMaxPayIndicators) public var showMaxPayIndicators
         
         public init() {}
@@ -22,6 +23,7 @@ public struct SettingsReducer {
         case delegate(Delegate)
         case onAppear
         case tappedCloseButton
+        case toggledShowCurrentMonthProminently(Bool)
         case toggledShowMaxPayIndicators(Bool)
     }
     
@@ -41,6 +43,10 @@ public struct SettingsReducer {
             case .tappedCloseButton:
                 return .send(.delegate(.didClose))
                 
+            case .toggledShowCurrentMonthProminently(let show):
+                state.showCurrentMonthProminently = show
+                return .none
+            
             case .toggledShowMaxPayIndicators(let show):
                 state.showMaxPayIndicators = show
                 return .none

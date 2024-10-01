@@ -25,6 +25,7 @@ public struct YearReducer {
         public var selectedDate: Date
         public var year: Year
         @Shared(.paySources) public var paySources
+        @Shared(.showCurrentMonthProminently) public var showCurrentMonthProminently
         @Shared(.showMaxPayIndicators) public var showMaxPayIndicators
         
         public var currentMonth: Month? {
