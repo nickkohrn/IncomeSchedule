@@ -1,7 +1,7 @@
 import ComposableArchitecture
 import Dependencies
 import Models
-import ScheduleClient
+import PayClient
 import SharedStateExtensions
 import WidgetKit
 

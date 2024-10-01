@@ -15,16 +15,48 @@ let package = Package(
             targets: ["IncomeScheduleCore"]
         ),
         .library(
+            name: "CalendarClient",
+            targets: ["CalendarClient"]
+        ),
+        .library(
             name: "DesignSystem",
             targets: ["DesignSystem"]
+        ),
+        .library(
+            name: "FileManagerClient",
+            targets: ["FileManagerClient"]
         ),
         .library(
             name: "Models",
             targets: ["Models"]
         ),
         .library(
+            name: "MonthDetailsFeature",
+            targets: ["MonthDetailsFeature"]
+        ),
+        .library(
             name: "MonthScheduleDetailsFeature",
             targets: ["MonthScheduleDetailsFeature"]
+        ),
+        .library(
+            name: "PayClient",
+            targets: ["PayClient"]
+        ),
+        .library(
+            name: "PayScheduleFeature",
+            targets: ["PayScheduleFeature"]
+        ),
+        .library(
+            name: "PaySourceDetailsFeature",
+            targets: ["PaySourceDetailsFeature"]
+        ),
+        .library(
+            name: "PaySourceFormFeature",
+            targets: ["PaySourceFormFeature"]
+        ),
+        .library(
+            name: "PaySourcesFeature",
+            targets: ["PaySourcesFeature"]
         ),
         .library(
             name: "ScheduleClient",
@@ -41,6 +73,10 @@ let package = Package(
         .library(
             name: "SharedStateExtensions",
             targets: ["SharedStateExtensions"]
+        ),
+        .library(
+            name: "YearFeature",
+            targets: ["YearFeature"]
         ),
     ],
     dependencies: [
@@ -74,7 +110,38 @@ let package = Package(
             dependencies: ["IncomeScheduleCore"]
         ),
         .target(
+            name: "CalendarClient",
+            dependencies: [
+                "Models",
+                .product(
+                    name: "Dependencies",
+                    package: "swift-dependencies"
+                ),
+                .product(
+                    name: "DependenciesMacros",
+                    package: "swift-dependencies"
+                ),
+                .product(
+                    name: "IdentifiedCollections",
+                    package: "swift-identified-collections"
+                )
+            ]
+        ),
+        .target(
             name: "DesignSystem"
+        ),
+        .target(
+            name: "FileManagerClient",
+            dependencies: [
+                .product(
+                    name: "Dependencies",
+                    package: "swift-dependencies"
+                ),
+                .product(
+                    name: "DependenciesMacros",
+                    package: "swift-dependencies"
+                )
+            ]
         ),
         .target(
             name: "Models",
@@ -90,6 +157,21 @@ let package = Package(
             ]
         ),
         .target(
+            name: "MonthDetailsFeature",
+            dependencies: [
+                "DesignSystem",
+                "Models",
+                .product(
+                    name: "ComposableArchitecture",
+                    package: "swift-composable-architecture"
+                ),
+                .product(
+                    name: "Dependencies",
+                    package: "swift-dependencies"
+                )
+            ]
+        ),
+        .target(
             name: "MonthScheduleDetailsFeature",
             dependencies: [
                 "DesignSystem",
@@ -101,6 +183,109 @@ let package = Package(
                 .product(
                     name: "Dependencies",
                     package: "swift-dependencies"
+                )
+            ]
+        ),
+        .target(
+            name: "PayClient",
+            dependencies: [
+                "Models",
+                .product(
+                    name: "Algorithms",
+                    package: "swift-algorithms"
+                ),
+                .product(
+                    name: "Dependencies",
+                    package: "swift-dependencies"
+                ),
+                .product(
+                    name: "DependenciesMacros",
+                    package: "swift-dependencies"
+                ),
+                .product(
+                    name: "IdentifiedCollections",
+                    package: "swift-identified-collections"
+                )
+            ]
+        ),
+        .target(
+            name: "PayScheduleFeature",
+            dependencies: [
+                "CalendarClient",
+                "DesignSystem",
+                "Models",
+                "PayClient",
+                "SharedStateExtensions",
+                .product(
+                    name: "ComposableArchitecture",
+                    package: "swift-composable-architecture"
+                ),
+                .product(
+                    name: "Dependencies",
+                    package: "swift-dependencies"
+                )
+            ]
+        ),
+        .target(
+            name: "PaySourceDetailsFeature",
+            dependencies: [
+                "DesignSystem",
+                "Models",
+                "PaySourceFormFeature",
+                "SharedStateExtensions",
+                .product(
+                    name: "ComposableArchitecture",
+                    package: "swift-composable-architecture"
+                ),
+                .product(
+                    name: "Dependencies",
+                    package: "swift-dependencies"
+                ),
+                .product(
+                    name: "Tagged",
+                    package: "swift-tagged"
+                )
+            ]
+        ),
+        .target(
+            name: "PaySourceFormFeature",
+            dependencies: [
+                "DesignSystem",
+                "Models",
+                "SharedStateExtensions",
+                .product(
+                    name: "ComposableArchitecture",
+                    package: "swift-composable-architecture"
+                ),
+                .product(
+                    name: "Dependencies",
+                    package: "swift-dependencies"
+                ),
+                .product(
+                    name: "Tagged",
+                    package: "swift-tagged"
+                )
+            ]
+        ),
+        .target(
+            name: "PaySourcesFeature",
+            dependencies: [
+                "DesignSystem",
+                "Models",
+                "PaySourceDetailsFeature",
+                "PaySourceFormFeature",
+                "SharedStateExtensions",
+                .product(
+                    name: "ComposableArchitecture",
+                    package: "swift-composable-architecture"
+                ),
+                .product(
+                    name: "Dependencies",
+                    package: "swift-dependencies"
+                ),
+                .product(
+                    name: "Tagged",
+                    package: "swift-tagged"
                 )
             ]
         ),
@@ -154,10 +339,35 @@ let package = Package(
         .target(
             name: "SharedStateExtensions",
             dependencies: [
+                "FileManagerClient",
                 "Models",
                 .product(
                     name: "ComposableArchitecture",
                     package: "swift-composable-architecture"
+                )
+            ]
+        ),
+        .target(
+            name: "YearFeature",
+            dependencies: [
+                "DesignSystem",
+                "Models",
+                "MonthDetailsFeature",
+                "PayClient",
+                "PaySourceFormFeature",
+                "PaySourcesFeature",
+                "SharedStateExtensions",
+                .product(
+                    name: "ComposableArchitecture",
+                    package: "swift-composable-architecture"
+                ),
+                .product(
+                    name: "Dependencies",
+                    package: "swift-dependencies"
+                ),
+                .product(
+                    name: "Tagged",
+                    package: "swift-tagged"
                 )
             ]
         ),

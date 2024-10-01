@@ -1,16 +1,16 @@
 import ComposableArchitecture
-import ScheduleFeature
 import SwiftUI
+import YearFeature
 
 @main
 struct IncomeScheduleApp: App {
     var body: some Scene {
         WindowGroup {
             NavigationStack {
-                ScheduleView(
-                    store: StoreOf<ScheduleReducer>(
-                        initialState: ScheduleReducer.State(),
-                        reducer: { ScheduleReducer() }
+                YearView(
+                    store: StoreOf<YearReducer>(
+                        initialState: YearReducer.State(),
+                        reducer: { YearReducer() }
                     )
                 )
             }
