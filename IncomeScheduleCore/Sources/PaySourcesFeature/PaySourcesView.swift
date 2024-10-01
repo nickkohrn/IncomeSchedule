@@ -14,22 +14,36 @@ public struct PaySourcesView: View {
     }
     
     public var body: some View {
-        List {
-            ForEach(store.sortedPaySources) { source in
-                Button {
-                    store.send(.tappedPaySource(source))
-                } label: {
-                    HStack {
-                        VStack(alignment: .leading) {
-                            Text(source.name)
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                .foregroundStyle(Color.primary)
-                            Text(source.frequency.name)
-                                .font(.caption)
-                                .foregroundStyle(Color.primary.secondary)
+        VStack {
+            if store.paySources.isEmpty {
+                ContentUnavailableView {
+                    Label("No Pay Sources", systemImage: "banknote")
+                } description: {
+                    Text("Pay sources you add will appear here.")
+                } actions: {
+                    Button("Add Pay Source") {
+                        store.send(.tappedAddButton)
+                    }
+                }
+            } else {
+                List {
+                    ForEach(store.sortedPaySources) { source in
+                        Button {
+                            store.send(.tappedPaySource(source))
+                        } label: {
+                            HStack {
+                                VStack(alignment: .leading) {
+                                    Text(source.name)
+                                        .frame(maxWidth: .infinity, alignment: .leading)
+                                        .foregroundStyle(Color.primary)
+                                    Text(source.frequency.name)
+                                        .font(.caption)
+                                        .foregroundStyle(Color.primary.secondary)
+                                }
+                                Spacer()
+                                DisclosureIndicator()
+                            }
                         }
-                        Spacer()
-                        DisclosureIndicator()
                     }
                 }
             }

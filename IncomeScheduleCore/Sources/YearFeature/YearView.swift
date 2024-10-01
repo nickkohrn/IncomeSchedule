@@ -3,6 +3,7 @@ import Models
 import MonthDetailsFeature
 import PaySourceFormFeature
 import PaySourcesFeature
+import SettingsFeature
 import SwiftUI
 
 public struct YearView: View {
@@ -17,8 +18,7 @@ public struct YearView: View {
         VStack {
             if store.paySources.isEmpty {
                 ContentUnavailableView {
-                    Text("No Pay Sources")
-                        .bold()
+                    Label("No Pay Schedule", systemImage: "calendar")
                 } description: {
                     Text("Your pay schedule will be calcualted after you add a pay source.")
                 } actions: {
@@ -28,14 +28,17 @@ public struct YearView: View {
                 }
             } else {
                 List {
-                    if store.isCurrentYear, let currentMonth = store.currentMonth {
+                    if store.isCurrentYear,
+                       let currentMonth = store.currentMonth,
+                       store.showCurrentMonthProminently {
                         Section {
                             Button {
                                 store.send(.tappedMonthButton(currentMonth))
                             } label: {
                                 LabeledContent {
                                     HStack {
-                                        if store.year.maximumPayMonths.contains(currentMonth) {
+                                        if store.year.maximumPayMonths.contains(currentMonth)
+                                            && store.showMaxPayIndicators {
                                             Image(systemName: "arrowtriangle.forward.fill")
                                                 .imageScale(.small)
                                                 .foregroundStyle(.tertiary)
@@ -64,7 +67,8 @@ public struct YearView: View {
                             } label: {
                                 LabeledContent {
                                     HStack {
-                                        if store.year.maximumPayMonths.contains(month) {
+                                        if store.year.maximumPayMonths.contains(month)
+                                            && store.showMaxPayIndicators {
                                             Image(systemName: "arrowtriangle.forward.fill")
                                                 .imageScale(.small)
                                                 .foregroundStyle(.tertiary)
@@ -84,11 +88,7 @@ public struct YearView: View {
                             }
                         }
                     } header: {
-                        if store.isCurrentYear {
-                            Text("This Year")
-                        } else {
-                            Text(store.year.yearStartDate.formatted(.dateTime.year()))
-                        }
+                        Text(store.year.yearStartDate.formatted(.dateTime.year()))
                     }
                 }
             }
@@ -98,14 +98,12 @@ public struct YearView: View {
         .toolbar {
             ToolbarItem(placement: .navigation) {
                 Button("Settings", systemImage: "gearshape") {
-                    
+                    store.send(.tappedSettingsButton)
                 }
             }
             ToolbarItemGroup(placement: .secondaryAction) {
-                Button {
+                Button("Pay Sources", systemImage: "banknote") {
                     store.send(.tappedViewPaySourcesButton)
-                } label: {
-                    Label("View Pay Sources", systemImage: "eye")
                 }
             }
         }
@@ -138,6 +136,16 @@ public struct YearView: View {
         ) { store in
             NavigationStack {
                 PaySourcesView(store: store)
+            }
+        }
+        .sheet(
+            item: $store.scope(
+                state: \.destination?.settings,
+                action: \.destination.settings
+            )
+        ) { store in
+            NavigationStack {
+                SettingsView(store: store)
             }
         }
     }

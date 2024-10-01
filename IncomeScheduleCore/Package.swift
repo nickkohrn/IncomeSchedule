@@ -5,9 +5,7 @@ import PackageDescription
 let package = Package(
     name: "IncomeScheduleCore",
     platforms: [
-        .iOS(
-            .v18
-        )
+        .iOS(.v18)
     ],
     products: [
         .library(
@@ -69,6 +67,10 @@ let package = Package(
         .library(
             name: "ScheduleFeature",
             targets: ["ScheduleFeature"]
+        ),
+        .library(
+            name: "SettingsFeature",
+            targets: ["SettingsFeature"]
         ),
         .library(
             name: "SharedStateExtensions",
@@ -337,6 +339,17 @@ let package = Package(
             ]
         ),
         .target(
+            name: "SettingsFeature",
+            dependencies: [
+                "DesignSystem",
+                "SharedStateExtensions",
+                .product(
+                    name: "ComposableArchitecture",
+                    package: "swift-composable-architecture"
+                )
+            ]
+        ),
+        .target(
             name: "SharedStateExtensions",
             dependencies: [
                 "FileManagerClient",
@@ -356,6 +369,7 @@ let package = Package(
                 "PayClient",
                 "PaySourceFormFeature",
                 "PaySourcesFeature",
+                "SettingsFeature",
                 "SharedStateExtensions",
                 .product(
                     name: "ComposableArchitecture",
