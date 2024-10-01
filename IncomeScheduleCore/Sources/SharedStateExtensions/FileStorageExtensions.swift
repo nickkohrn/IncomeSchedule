@@ -16,7 +16,6 @@ extension PersistenceReaderKey where Self == FileStorageKey<IdentifiedArrayOf<Pa
     }
 }
 
-
 extension PersistenceReaderKey where Self == PersistenceKeyDefault<FileStorageKey<IdentifiedArrayOf<PaySource>>> {
     public static var paySources: Self {
         PersistenceKeyDefault(.paySources, [])

@@ -11,18 +11,22 @@ public struct PaySourceFormView: View {
     
     public var body: some View {
         Form {
-            Section {
-                Text("Add a regular source of income so that your pay schedule can be calculated.")
-                    .font(.footnote)
-                    .foregroundStyle(.secondary)
+            if store.showHelpText {
+                Section {
+                    Text("Add a regular source of income so that your pay schedule can be calculated.")
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                }
+                .listRowBackground(Color.clear)
             }
-            .listRowBackground(Color.clear)
             Section {
                 TextField("Name", text: $store.name.sending(\.setName))
             } header: {
                 Text("Source")
             } footer: {
-                Text("This is the name of the source of pay, such as a company name.")
+                if store.showHelpText {
+                    Text("This is the name of the source of pay, such as a company name.")
+                }
             }
             Section {
                 DatePicker(
@@ -40,7 +44,9 @@ public struct PaySourceFormView: View {
                     }
                 }
             } footer: {
-                Text("If you have not yet been paid by this source, select the next date on which you will be paid.")
+                if store.showHelpText {
+                    Text("If you have not yet been paid by this source, select the next date on which you will be paid.")
+                }
             }
         }
         .navigationTitle("Pay Source")

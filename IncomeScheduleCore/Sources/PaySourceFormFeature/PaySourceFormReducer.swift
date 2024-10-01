@@ -9,6 +9,7 @@ public struct PaySourceFormReducer {
     @ObservableState
     public struct State: Equatable, Hashable {
         public var date: Date
+        @Shared(.didAddInitialPaySource) var didAddInitialPaySource
         public var frequency: PayFrequency
         public var name: String
         public var paySource: PaySource?
@@ -30,6 +31,10 @@ public struct PaySourceFormReducer {
             } else {
                 return !name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
             }
+        }
+        
+        public var showHelpText: Bool {
+            !didAddInitialPaySource
         }
         
         public init(paySource: PaySource?) {
@@ -111,6 +116,7 @@ public struct PaySourceFormReducer {
                     )
                     state.paySources.append(source)
                 }
+                state.didAddInitialPaySource = true
                 return .send(.delegate(.didSave))
             }
         }
