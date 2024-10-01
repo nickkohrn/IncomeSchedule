@@ -59,9 +59,10 @@ public struct PaySourceDetailsView: View {
 }
 
 #if DEBUG
+import Dependencies
 import SharedStateExtensions
 
-#Preview {
+#Preview("Populated") {
     @Dependency(\.calendar) var calendar
     @Dependency(\.date.now) var now
     @Dependency(\.uuid) var uuid
@@ -81,6 +82,23 @@ import SharedStateExtensions
         PaySourceDetailsView(
             store: StoreOf<PaySourceDetailsReducer>(
                 initialState: PaySourceDetailsReducer.State(paySourceID: paySource.id),
+                reducer: { PaySourceDetailsReducer() }
+            )
+        )
+    }
+}
+
+#Preview(
+    "Unpopulated",
+    traits: .dependencies({ dependencies in
+        dependencies.uuid = .constant(UUID(1))
+    })
+) {
+    @Dependency(\.uuid) var uuid
+    return NavigationStack {
+        PaySourceDetailsView(
+            store: StoreOf<PaySourceDetailsReducer>(
+                initialState: PaySourceDetailsReducer.State(paySourceID: PaySource.ID(uuid())),
                 reducer: { PaySourceDetailsReducer() }
             )
         )
