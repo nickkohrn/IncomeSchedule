@@ -11,7 +11,7 @@ public struct PayClient {
         case invalidDate
     }
     
-    public var year: @Sendable (_ selectedDate: Date, _ sources: Set<PaySource>) throws -> Year
+    public var year: @Sendable (_ selectedDate: Date, _ sources: IdentifiedArrayOf<PaySource>) throws -> Year
 }
 
 extension PayClient: DependencyKey {

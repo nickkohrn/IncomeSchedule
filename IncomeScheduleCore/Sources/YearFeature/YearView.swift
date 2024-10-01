@@ -139,13 +139,14 @@ public struct YearView: View {
 }
 
 #if DEBUG
+import IdentifiedCollections
 import SharedStateExtensions
 
 #Preview("Populated") {
     @Dependency(\.calendar) var calendar
     @Dependency(\.uuid) var uuid
     @Shared(.paySources) var paySources
-    paySources = Set<PaySource>([
+    paySources = IdentifiedArrayOf<PaySource>(uniqueElements: [
         PaySource(
             name: "Atomic Robot",
             frequency: .biWeekly,

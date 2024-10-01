@@ -255,6 +255,10 @@ let package = Package(
                 .product(
                     name: "Dependencies",
                     package: "swift-dependencies"
+                ),
+                .product(
+                    name: "Tagged",
+                    package: "swift-tagged"
                 )
             ]
         ),
@@ -272,6 +276,10 @@ let package = Package(
                 .product(
                     name: "Dependencies",
                     package: "swift-dependencies"
+                ),
+                .product(
+                    name: "Tagged",
+                    package: "swift-tagged"
                 )
             ]
         ),
@@ -350,6 +358,10 @@ let package = Package(
                 .product(
                     name: "Dependencies",
                     package: "swift-dependencies"
+                ),
+                .product(
+                    name: "Tagged",
+                    package: "swift-tagged"
                 )
             ]
         ),

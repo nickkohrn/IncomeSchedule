@@ -3,6 +3,7 @@ import Foundation
 import Models
 import PaySourceDetailsFeature
 import SharedStateExtensions
+import Tagged
 
 @Reducer
 public struct PaySourcesReducer {

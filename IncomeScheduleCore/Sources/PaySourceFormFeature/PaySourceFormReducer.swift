@@ -2,6 +2,7 @@ import ComposableArchitecture
 import Foundation
 import Models
 import SharedStateExtensions
+import Tagged
 
 @Reducer
 public struct PaySourceFormReducer {
@@ -64,7 +65,9 @@ public struct PaySourceFormReducer {
     
     public var body: some ReducerOf<Self> {
         BindingReducer()
-        Reduce { state, action in
+        Reduce {
+ state,
+ action in
             switch action {
             case .binding:
                 return .none
@@ -88,17 +91,26 @@ public struct PaySourceFormReducer {
                 return .send(.delegate(.didCancel))
                 
             case .tappedSaveButton:
+                @Dependency(\.calendar) var calendar
+                let date = calendar.startOfDay(for: state.date)
+                let name = state.name.trimmingCharacters(in: .whitespacesAndNewlines)
+                let frequency = state.frequency
                 if let paySource = state.paySource {
-#warning("Update existing pay source")
+                    state.paySources[id: paySource.id] = PaySource(
+                        name: name,
+                        frequency: frequency,
+                        referencePayDate: date,
+                        uuid: paySource.uuid
+                    )
                 } else {
                     @Dependency(\.uuid) var uuid
                     let source = PaySource(
-                        name: state.name,
-                        frequency: state.frequency,
-                        referencePayDate: state.date,
+                        name: name,
+                        frequency: frequency,
+                        referencePayDate: date,
                         uuid: uuid()
                     )
-                    state.paySources.insert(source)
+                    state.paySources.append(source)
                 }
                 return .send(.delegate(.didSave))
             }
