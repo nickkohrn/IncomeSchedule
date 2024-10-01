@@ -93,11 +93,6 @@ public struct YearView: View {
             }
             ToolbarItemGroup(placement: .secondaryAction) {
                 Button {
-                    store.send(.tappedAddPaySourceButton)
-                } label: {
-                    Label("Add Pay Source", systemImage: "plus")
-                }
-                Button {
                     store.send(.tappedViewPaySourcesButton)
                 } label: {
                     Label("View Pay Sources", systemImage: "eye")

@@ -2,6 +2,7 @@ import ComposableArchitecture
 import Foundation
 import Models
 import PaySourceDetailsFeature
+import PaySourceFormFeature
 import SharedStateExtensions
 import Tagged
 
@@ -10,6 +11,7 @@ public struct PaySourcesReducer {
     @Reducer(state: .hashable)
     public enum Destination {
         case paySourceDetails(PaySourceDetailsReducer)
+        case paySourceForm(PaySourceFormReducer)
     }
     
     @ObservableState
@@ -37,6 +39,7 @@ public struct PaySourcesReducer {
         case delegate(Delegate)
         case destination(PresentationAction<Destination.Action>)
         case onAppear
+        case tappedAddButton
         case tappedCloseButton
         case tappedPaySource(PaySource)
     }
@@ -51,10 +54,22 @@ public struct PaySourcesReducer {
             case .delegate:
                 return .none
                 
+            case .destination(.presented(.paySourceForm(.delegate(.didCancel)))):
+                state.destination = nil
+                return .none
+            
+            case .destination(.presented(.paySourceForm(.delegate(.didSave)))):
+                state.destination = nil
+                return .none
+                
             case .destination:
                 return .none
                 
             case .onAppear:
+                return .none
+                
+            case .tappedAddButton:
+                state.destination = .paySourceForm(PaySourceFormReducer.State(paySource: nil))
                 return .none
                 
             case .tappedCloseButton:

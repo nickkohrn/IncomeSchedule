@@ -3,6 +3,7 @@ import DesignSystem
 import Foundation
 import Models
 import PaySourceDetailsFeature
+import PaySourceFormFeature
 import SwiftUI
 
 public struct PaySourcesView: View {
@@ -39,6 +40,11 @@ public struct PaySourcesView: View {
             ToolbarItem(placement: .cancellationAction) {
                 CloseButton { store.send(.tappedCloseButton) }
             }
+            ToolbarItem(placement: .primaryAction) {
+                Button("Add Pay Source", systemImage: "plus") {
+                    store.send(.tappedAddButton)
+                }
+            }
         }
         .navigationDestination(
             item: $store.scope(
@@ -48,7 +54,16 @@ public struct PaySourcesView: View {
         ) { store in
             PaySourceDetailsView(store: store)
         }
-
+        .sheet(
+            item: $store.scope(
+                state: \.destination?.paySourceForm,
+                action: \.destination.paySourceForm
+            )
+        ) { store in
+            NavigationStack {
+                PaySourceFormView(store: store)
+            }
+        }
     }
 }
 
