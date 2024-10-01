@@ -34,10 +34,12 @@ public struct PaySourceDetailsView: View {
                 ToolbarItem(placement: .primaryAction) {
                     Button("Edit") { store.send(.tappedEditButton) }
                 }
-                ToolbarItem(placement: .bottomBar) {
+                ToolbarItemGroup(placement: .bottomBar) {
+                    Spacer()
                     Button("Delete", systemImage: "trash") {
                         store.send(.tappedDeleteButton)
                     }
+                    Spacer()
                 }
             }
         }

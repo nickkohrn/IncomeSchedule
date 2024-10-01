@@ -18,8 +18,7 @@ public struct YearView: View {
         VStack {
             if store.paySources.isEmpty {
                 ContentUnavailableView {
-                    Text("No Pay Sources")
-                        .bold()
+                    Label("No Pay Schedule", systemImage: "calendar")
                 } description: {
                     Text("Your pay schedule will be calcualted after you add a pay source.")
                 } actions: {
