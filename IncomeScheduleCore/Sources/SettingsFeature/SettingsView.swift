@@ -21,7 +21,7 @@ public struct SettingsView: View {
                     }
                 }
             } footer: {
-                Text("If enabled, a symbol will indicate months with the highest pay count.")
+                Text("If enabled, a symbol will indicate which months have the highest pay count.")
             }
             Section {
                 Toggle(isOn: $store.showCurrentMonthProminently.sending(\.toggledShowCurrentMonthProminently)) {
