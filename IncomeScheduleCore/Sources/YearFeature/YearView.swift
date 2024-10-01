@@ -103,7 +103,7 @@ public struct YearView: View {
                 }
             }
             ToolbarItemGroup(placement: .secondaryAction) {
-                Button("View Pay Sources", systemImage: "eye") {
+                Button("Pay Sources", systemImage: "banknote") {
                     store.send(.tappedViewPaySourcesButton)
                 }
             }
