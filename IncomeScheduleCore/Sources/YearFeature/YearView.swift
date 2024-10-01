@@ -34,13 +34,23 @@ public struct YearView: View {
                                 store.send(.tappedMonthButton(currentMonth))
                             } label: {
                                 LabeledContent {
-                                    Text(currentMonth.coalescedPayDates.count.formatted())
+                                    HStack {
+                                        if store.year.maximumPayMonths.contains(currentMonth) {
+                                            Image(systemName: "arrowtriangle.forward.fill")
+                                                .imageScale(.small)
+                                                .foregroundStyle(.tertiary)
+                                                .scaleEffect(0.75)
+                                        }
+                                        Text(currentMonth.payDates.count.formatted())
+                                    }
                                 } label: {
-                                    Text(currentMonth.monthStartDate.formatted(
-                                        .dateTime.month(
-                                            dynamicTypeSize.isAccessibilitySize ? .abbreviated : .wide
-                                        )
-                                    ))
+                                    HStack {
+                                        Text(currentMonth.monthStartDate.formatted(
+                                            .dateTime.month(
+                                                dynamicTypeSize.isAccessibilitySize ? .abbreviated : .wide
+                                            )
+                                        ))
+                                    }
                                 }
                             }
                         } header: {
