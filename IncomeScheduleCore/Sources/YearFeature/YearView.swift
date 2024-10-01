@@ -3,6 +3,7 @@ import Models
 import MonthDetailsFeature
 import PaySourceFormFeature
 import PaySourcesFeature
+import SettingsFeature
 import SwiftUI
 
 public struct YearView: View {
@@ -35,7 +36,8 @@ public struct YearView: View {
                             } label: {
                                 LabeledContent {
                                     HStack {
-                                        if store.year.maximumPayMonths.contains(currentMonth) {
+                                        if store.year.maximumPayMonths.contains(currentMonth)
+                                            && store.showMaxPayIndicators {
                                             Image(systemName: "arrowtriangle.forward.fill")
                                                 .imageScale(.small)
                                                 .foregroundStyle(.tertiary)
@@ -64,7 +66,8 @@ public struct YearView: View {
                             } label: {
                                 LabeledContent {
                                     HStack {
-                                        if store.year.maximumPayMonths.contains(month) {
+                                        if store.year.maximumPayMonths.contains(month)
+                                            && store.showMaxPayIndicators {
                                             Image(systemName: "arrowtriangle.forward.fill")
                                                 .imageScale(.small)
                                                 .foregroundStyle(.tertiary)
@@ -98,14 +101,12 @@ public struct YearView: View {
         .toolbar {
             ToolbarItem(placement: .navigation) {
                 Button("Settings", systemImage: "gearshape") {
-                    
+                    store.send(.tappedSettingsButton)
                 }
             }
             ToolbarItemGroup(placement: .secondaryAction) {
-                Button {
+                Button("View Pay Sources", systemImage: "eye") {
                     store.send(.tappedViewPaySourcesButton)
-                } label: {
-                    Label("View Pay Sources", systemImage: "eye")
                 }
             }
         }
@@ -138,6 +139,16 @@ public struct YearView: View {
         ) { store in
             NavigationStack {
                 PaySourcesView(store: store)
+            }
+        }
+        .sheet(
+            item: $store.scope(
+                state: \.destination?.settings,
+                action: \.destination.settings
+            )
+        ) { store in
+            NavigationStack {
+                SettingsView(store: store)
             }
         }
     }

@@ -5,6 +5,7 @@ import MonthDetailsFeature
 import PayClient
 import PaySourceFormFeature
 import PaySourcesFeature
+import SettingsFeature
 import SharedStateExtensions
 import Tagged
 
@@ -15,6 +16,7 @@ public struct YearReducer {
         case monthDetails(MonthDetailsReducer)
         case paySourceForm(PaySourceFormReducer)
         case paySources(PaySourcesReducer)
+        case settings(SettingsReducer)
     }
     
     @ObservableState
@@ -23,6 +25,7 @@ public struct YearReducer {
         public var selectedDate: Date
         public var year: Year
         @Shared(.paySources) public var paySources
+        @Shared(.showMaxPayIndicators) public var showMaxPayIndicators
         
         public var currentMonth: Month? {
             @Dependency(\.calendar) var calendar
@@ -55,6 +58,7 @@ public struct YearReducer {
         case paySourcesUpdated(IdentifiedArrayOf<PaySource>)
         case tappedAddPaySourceButton
         case tappedMonthButton(Month)
+        case tappedSettingsButton
         case tappedViewPaySourcesButton
     }
     
@@ -81,6 +85,10 @@ public struct YearReducer {
                 state.destination = nil
                 return .none
                 
+            case .destination(.presented(.settings(.delegate(.didClose)))):
+                state.destination = nil
+                return .none
+                
             case .destination:
                 return .none
                 
@@ -103,6 +111,10 @@ public struct YearReducer {
                 
             case .tappedMonthButton(let month):
                 state.destination = .monthDetails(MonthDetailsReducer.State(month: month))
+                return .none
+                
+            case .tappedSettingsButton:
+                state.destination = .settings(SettingsReducer.State())
                 return .none
                 
             case .tappedViewPaySourcesButton:
