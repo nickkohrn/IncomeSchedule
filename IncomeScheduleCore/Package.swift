@@ -232,6 +232,7 @@ let package = Package(
                 "DesignSystem",
                 "Models",
                 "PaySourceFormFeature",
+                "SharedStateExtensions",
                 .product(
                     name: "ComposableArchitecture",
                     package: "swift-composable-architecture"
@@ -239,6 +240,10 @@ let package = Package(
                 .product(
                     name: "Dependencies",
                     package: "swift-dependencies"
+                ),
+                .product(
+                    name: "Tagged",
+                    package: "swift-tagged"
                 )
             ]
         ),

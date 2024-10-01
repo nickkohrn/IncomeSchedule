@@ -3,6 +3,7 @@ import Foundation
 import Models
 import PaySourceFormFeature
 import SharedStateExtensions
+import Tagged
 
 @Reducer
 public struct PaySourceDetailsReducer {
@@ -14,14 +15,20 @@ public struct PaySourceDetailsReducer {
     @ObservableState
     public struct State: Equatable, Hashable {
         @Presents public var destination: Destination.State?
-        public let paySource: PaySource
+        @Shared(.paySources) public var paySources
+        public var paySourceID: PaySource.ID
         
-        public init(paySource: PaySource) {
-            self.paySource = paySource
+        public var paySource: PaySource? {
+            paySources[id: paySourceID]
+        }
+        
+        public init(paySourceID: PaySource.ID) {
+            self.paySourceID = paySourceID
         }
         
         public func hash(into hasher: inout Hasher) {
-            hasher.combine(paySource)
+            hasher.combine(destination)
+            hasher.combine(paySourceID)
         }
     }
     

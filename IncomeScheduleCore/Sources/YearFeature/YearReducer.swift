@@ -52,6 +52,7 @@ public struct YearReducer {
         case binding(BindingAction<State>)
         case destination(PresentationAction<Destination.Action>)
         case onAppear
+        case paySourcesUpdated(IdentifiedArrayOf<PaySource>)
         case tappedAddPaySourceButton
         case tappedMonthButton(Month)
         case tappedViewPaySourcesButton
@@ -84,6 +85,16 @@ public struct YearReducer {
                 return .none
                 
             case .onAppear:
+                return .merge(
+                    calculateYear(state: &state),
+                    .publisher {
+                        state.$paySources.publisher.map { updatedSources in
+                            Action.paySourcesUpdated(updatedSources)
+                        }
+                    }
+                )
+                
+            case .paySourcesUpdated:
                 return calculateYear(state: &state)
                 
             case .tappedAddPaySourceButton:

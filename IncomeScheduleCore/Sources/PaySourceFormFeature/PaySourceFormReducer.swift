@@ -65,9 +65,7 @@ public struct PaySourceFormReducer {
     
     public var body: some ReducerOf<Self> {
         BindingReducer()
-        Reduce {
- state,
- action in
+        Reduce { state, action in
             switch action {
             case .binding:
                 return .none
@@ -96,12 +94,13 @@ public struct PaySourceFormReducer {
                 let name = state.name.trimmingCharacters(in: .whitespacesAndNewlines)
                 let frequency = state.frequency
                 if let paySource = state.paySource {
-                    state.paySources[id: paySource.id] = PaySource(
+                    let source = PaySource(
                         name: name,
                         frequency: frequency,
                         referencePayDate: date,
                         uuid: paySource.uuid
                     )
+                    state.paySources[id: paySource.id] = source
                 } else {
                     @Dependency(\.uuid) var uuid
                     let source = PaySource(

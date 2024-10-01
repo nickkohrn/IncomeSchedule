@@ -62,7 +62,7 @@ public struct PaySourcesReducer {
                 
             case .tappedPaySource(let paySource):
                 state.destination = .paySourceDetails(
-                    PaySourceDetailsReducer.State(paySource: paySource)
+                    PaySourceDetailsReducer.State(paySourceID: paySource.id)
                 )
                 return .none
             }

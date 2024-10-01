@@ -14,8 +14,10 @@ public struct PaySourceDetailsView: View {
     
     public var body: some View {
         List {
-            LabeledContent("Source", value: store.paySource.name)
-            LabeledContent("Frequency", value: store.paySource.frequency.name)
+            if let paySource = store.paySource {
+                LabeledContent("Source", value: paySource.name)
+                LabeledContent("Frequency", value: paySource.frequency.name)
+            }
         }
         .navigationTitle(Text("Pay Source"))
         .onAppear { store.send(.onAppear) }
@@ -42,22 +44,24 @@ import SharedStateExtensions
 
 #Preview {
     @Dependency(\.calendar) var calendar
+    @Dependency(\.date.now) var now
     @Dependency(\.uuid) var uuid
+    let paySource = PaySource(
+        name: "Atomic Robot",
+        frequency: .biWeekly,
+        referencePayDate: calendar.date(
+            from: DateComponents(
+                year: 2024,
+                month: 7,
+                day: 26
+            )
+        )!,
+        uuid: uuid()
+    )
     NavigationStack {
         PaySourceDetailsView(
             store: StoreOf<PaySourceDetailsReducer>(
-                initialState: PaySourceDetailsReducer.State(
-                    paySource: PaySource(
-                        name: "Atomic Robot",
-                        frequency: .biWeekly,
-                        referencePayDate: calendar.date(from: DateComponents(
-                            year: 2024,
-                            month: 9,
-                            day: 20
-                        ))!,
-                        uuid: uuid()
-                    )
-                ),
+                initialState: PaySourceDetailsReducer.State(paySourceID: paySource.id),
                 reducer: { PaySourceDetailsReducer() }
             )
         )
