@@ -17,6 +17,10 @@ let package = Package(
             targets: ["CalendarClient"]
         ),
         .library(
+            name: "ComposableArchitectureExtensions",
+            targets: ["ComposableArchitectureExtensions"]
+        ),
+        .library(
             name: "DesignSystem",
             targets: ["DesignSystem"]
         ),
@@ -126,6 +130,15 @@ let package = Package(
                 .product(
                     name: "IdentifiedCollections",
                     package: "swift-identified-collections"
+                )
+            ]
+        ),
+        .target(
+            name: "ComposableArchitectureExtensions",
+            dependencies: [
+                .product(
+                    name: "ComposableArchitecture",
+                    package: "swift-composable-architecture"
                 )
             ]
         ),
@@ -363,6 +376,7 @@ let package = Package(
         .target(
             name: "YearFeature",
             dependencies: [
+                "ComposableArchitectureExtensions",
                 "DesignSystem",
                 "Models",
                 "MonthDetailsFeature",
