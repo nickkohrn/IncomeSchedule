@@ -11,7 +11,15 @@ public struct PayClient {
         case invalidDate
     }
     
-    public var year: @Sendable (_ selectedDate: Date, _ sources: IdentifiedArrayOf<PaySource>) throws -> Year
+    public var nextCoalescedPayDate: @Sendable (
+        _ currentDate: Date,
+        _ sources: IdentifiedArrayOf<PaySource>
+    ) throws -> CoalescedPayDate
+    
+    public var year: @Sendable (
+        _ selectedDate: Date,
+        _ sources: IdentifiedArrayOf<PaySource>
+    ) throws -> Year
 }
 
 extension PayClient: DependencyKey {
@@ -173,49 +181,87 @@ extension PayClient: DependencyKey {
             }
         }
         
+        @Sendable
+        func year(selectedDate: Date, sources: IdentifiedArrayOf<PaySource>) throws -> Year {
+            @Dependency(\.date.now) var now
+            guard let selectedDateYearInterval = calendar.dateInterval(
+                of: .year,
+                for: selectedDate
+            ) else {
+                throw Error.invalidDate
+            }
+            let startOfYear = selectedDateYearInterval.start
+            var combinedPayDates = [PayDate]()
+            for source in sources {
+                let payDates = try payDates(selectedDate: selectedDate, source: source)
+                combinedPayDates.append(contentsOf: payDates)
+            }
+            // Sort combined pay dates
+            let sortedPayDates = combinedPayDates.sorted { lhs, rhs in
+                lhs.date < rhs.date
+            }
+            // Chunk pay dates by month
+            let chunkedByMonth = sortedPayDates.chunked { lhs, rhs in
+                calendar.isDate(lhs.date, equalTo: rhs.date, toGranularity: .month)
+            }
+            let months: [Month] = chunkedByMonth.compactMap { chunk in
+                guard
+                    let startDate = chunk.first?.date,
+                    let monthInterval = calendar.dateInterval(of: .month, for: startDate)
+                else {
+                    return nil
+                }
+                let isCurrentMonth = calendar.isDate(
+                    monthInterval.start,
+                    equalTo: now,
+                    toGranularity: .month
+                )
+                return Month(
+                    isCurrentMonth: isCurrentMonth,
+                    monthStartDate: monthInterval.start,
+                    payDates: Array(chunk),
+                    uuid: UUID()
+                )
+            }
+            let identifiedMonths = IdentifiedArrayOf<Month>(uniqueElements: months)
+            return Year(yearStartDate: startOfYear, months: identifiedMonths, uuid: UUID())
+        }
+        
         return PayClient(
-            year: {selectedDate, sources in
-                @Dependency(\.date.now) var now
-                guard let selectedDateYearInterval = calendar.dateInterval(
-                    of: .year,
-                    for: selectedDate
-                ) else {
+            nextCoalescedPayDate: { currentDate, sources in
+                let currentYear = try year(selectedDate: currentDate, sources: sources)
+                guard let currentMonth = (currentYear.months.first { month in month.isCurrentMonth }) else {
                     throw Error.invalidDate
                 }
-                let startOfYear = selectedDateYearInterval.start
-                var combinedPayDates = [PayDate]()
-                for source in sources {
-                    let payDates = try payDates(selectedDate: selectedDate, source: source)
-                    combinedPayDates.append(contentsOf: payDates)
-                }
-                // Sort combined pay dates
-                let sortedPayDates = combinedPayDates.sorted { lhs, rhs in
-                    lhs.date < rhs.date
-                }
-                // Chunk pay dates by month
-                let chunkedByMonth = sortedPayDates.chunked { lhs, rhs in
-                    calendar.isDate(lhs.date, equalTo: rhs.date, toGranularity: .month)
-                }
-                let months: [Month] = chunkedByMonth.compactMap { chunk in
+                let currentMonthIndex = currentYear.months.index(id: currentMonth.id)
+                if currentMonth.id == currentYear.months.last?.id,
+                   (currentDate > currentYear.months.last?.coalescedPayDates.last?.date ?? currentDate) {
+                    // The last pay date has passed; calculate first pay date of next year.
                     guard
-                        let startDate = chunk.first?.date,
-                        let monthInterval = calendar.dateInterval(of: .month, for: startDate)
+                        let startOfCurrentYear = calendar.dateInterval(of: .year, for: currentDate)?.start,
+                        let startOfNextYear = calendar.date(byAdding: .year, value: 1, to: startOfCurrentYear)
                     else {
-                        return nil
+                        throw Error.invalidDate
                     }
-                    let isCurrentMonth = calendar.isDate(
-                        monthInterval.start,
-                        equalTo: now,
-                        toGranularity: .month
-                    )
-                    return Month(
-                        isCurrentMonth: isCurrentMonth,
-                        monthStartDate: monthInterval.start,
-                        payDates: Array(chunk),
-                        uuid: UUID()
-                    )
+                    let nextYear = try year(selectedDate: startOfNextYear, sources: sources)
+                    guard let firstPayDateOfNextYear = nextYear.months.first?.coalescedPayDates.first else {
+                        throw Error.invalidDate
+                    }
+                    return firstPayDateOfNextYear
+                } else {
+                    // Calculate next pay date in current year.
+                    let allDates = currentYear.months.flatMap(\.coalescedPayDates)
+                    let nextPayDate = allDates.first { payDate in
+                        calendar
+                            .startOfDay(for: payDate.date) >= calendar
+                            .startOfDay(for: currentDate)
+                    }
+                    guard let nextPayDate else { throw Error.invalidDate }
+                    return nextPayDate
                 }
-                return Year(yearStartDate: startOfYear, months: months, uuid: UUID())
+            },
+            year: { selectedDate, sources in
+                try year(selectedDate: selectedDate, sources: sources)
             }
         )
     }()
