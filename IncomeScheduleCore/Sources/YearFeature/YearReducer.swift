@@ -23,9 +23,10 @@ public struct YearReducer {
     
     @ObservableState
     public struct State: Equatable {
-        @Presents public var destination: Destination.State?
+        public var nextPayDate: CoalescedPayDate?
         public var selectedDate: Date
         public var year: Year
+        @Presents public var destination: Destination.State?
         @Shared(.paySources) public var paySources
         @Shared(.showCurrentMonthProminently) public var showCurrentMonthProminently
         @Shared(.showMaxPayIndicators) public var showMaxPayIndicators
@@ -141,12 +142,19 @@ public struct YearReducer {
     
     private func calculateYear(state: inout State) -> Effect<Action> {
         do {
+            @Dependency(\.calendar) var calendar
+            @Dependency(\.date.now) var now
             @Dependency(\.payClient) var payClient
             let year = try payClient.year(
                 selectedDate: state.selectedDate,
                 sources: state.paySources
             )
             state.year = year
+            let nextPayDate = try payClient.nextCoalescedPayDate(
+                currentDate: calendar.startOfDay(for: now),
+                sources: state.paySources
+            )
+            state.nextPayDate = nextPayDate
         } catch {
             // TODO: Handle this
             print("ERROR:", error)

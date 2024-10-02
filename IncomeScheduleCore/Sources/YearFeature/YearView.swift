@@ -59,6 +59,10 @@ public struct YearView: View {
                             }
                         } header: {
                             Text("This Month")
+                        } footer: {
+                            if let nextPayDate = store.nextPayDate {
+                                Text("Your next pay date is \(nextPayDate.date.formatted(.dateTime.month(.wide).weekday(.wide).day())).")
+                            }
                         }
                     }
                     Section {
