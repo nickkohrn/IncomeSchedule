@@ -14,9 +14,17 @@
 		F978C04E2CA32AF700C4511A /* Models in Frameworks */ = {isa = PBXBuildFile; productRef = F978C04D2CA32AF700C4511A /* Models */; };
 		F978C0562CA332F900C4511A /* SharedStateExtensions in Frameworks */ = {isa = PBXBuildFile; productRef = F978C0552CA332F900C4511A /* SharedStateExtensions */; };
 		F9972A802C9E0EFC007B2E3C /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = F9972A7F2C9E0EFC007B2E3C /* ComposableArchitecture */; };
+		F9BE15F02CADCAD8004F9E80 /* IncomeScheduleWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = F978C0362CA3245700C4511A /* IncomeScheduleWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		F9BE15F12CADCAD8004F9E80 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F9DDFA772C9DDFD500488DC5 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F978C0352CA3245700C4511A;
+			remoteInfo = IncomeScheduleWidgetExtension;
+		};
 		F9DDFA902C9DDFD600488DC5 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = F9DDFA772C9DDFD500488DC5 /* Project object */;
@@ -32,6 +40,20 @@
 			remoteInfo = IncomeSchedule;
 		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		F9BE15F32CADCAD8004F9E80 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				F9BE15F02CADCAD8004F9E80 /* IncomeScheduleWidgetExtension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		F978C0362CA3245700C4511A /* IncomeScheduleWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = IncomeScheduleWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -201,10 +223,12 @@
 				F9DDFA7B2C9DDFD500488DC5 /* Sources */,
 				F9DDFA7C2C9DDFD500488DC5 /* Frameworks */,
 				F9DDFA7D2C9DDFD500488DC5 /* Resources */,
+				F9BE15F32CADCAD8004F9E80 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				F9BE15F22CADCAD8004F9E80 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				F9DDFA812C9DDFD500488DC5 /* IncomeSchedule */,
@@ -378,6 +402,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		F9BE15F22CADCAD8004F9E80 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F978C0352CA3245700C4511A /* IncomeScheduleWidgetExtension */;
+			targetProxy = F9BE15F12CADCAD8004F9E80 /* PBXContainerItemProxy */;
+		};
 		F9DDFA912C9DDFD600488DC5 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = F9DDFA7E2C9DDFD500488DC5 /* IncomeSchedule */;

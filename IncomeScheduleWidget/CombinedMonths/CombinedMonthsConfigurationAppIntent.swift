@@ -1,10 +1,10 @@
-import AppIntents
-import WidgetKit
-
-internal struct CombinedMonthsConfigurationAppIntent: WidgetConfigurationIntent {
-    internal static var title: LocalizedStringResource { "Combined Month Pays" }
-    internal static var description: IntentDescription { "Shows the number of pays in the current and the next month." }
-    
-    @Parameter(title: "Spell Numbers", description: "Whether numbers should be spelled out.", default: false)
-    internal var spellNumbers: Bool
-}
+//import AppIntents
+//import WidgetKit
+//
+//internal struct CombinedMonthsConfigurationAppIntent: WidgetConfigurationIntent {
+//    internal static var title: LocalizedStringResource { "Combined Month Pays" }
+//    internal static var description: IntentDescription { "Shows the number of pays in the current and the next month." }
+//    
+//    @Parameter(title: "Spell Numbers", description: "Whether numbers should be spelled out.", default: false)
+//    internal var spellNumbers: Bool
+//}
