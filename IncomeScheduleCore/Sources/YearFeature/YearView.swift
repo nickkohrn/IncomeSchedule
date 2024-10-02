@@ -9,6 +9,7 @@ import SwiftUI
 public struct YearView: View {
     @Bindable private var store: StoreOf<YearReducer>
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    @Environment(\.scenePhase) private var scenePhase
     
     public init(store: StoreOf<YearReducer>) {
         self.store = store
@@ -95,6 +96,9 @@ public struct YearView: View {
         }
         .navigationTitle(Text("Pay Schedule"))
         .onAppear { store.send(.onAppear) }
+        .onChange(of: scenePhase) { oldValue, newValue in
+            store.send(.scenePhaseDidChange(old: oldValue, new: newValue))
+        }
         .toolbar {
             ToolbarItem(placement: .navigation) {
                 Button("Settings", systemImage: "gearshape") {

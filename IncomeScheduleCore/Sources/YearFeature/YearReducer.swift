@@ -7,6 +7,7 @@ import PaySourceFormFeature
 import PaySourcesFeature
 import SettingsFeature
 import SharedStateExtensions
+import SwiftUI
 import Tagged
 
 @Reducer
@@ -57,6 +58,7 @@ public struct YearReducer {
         case destination(PresentationAction<Destination.Action>)
         case onAppear
         case paySourcesUpdated(IdentifiedArrayOf<PaySource>)
+        case scenePhaseDidChange(old: ScenePhase, new: ScenePhase)
         case tappedAddPaySourceButton
         case tappedMonthButton(Month)
         case tappedSettingsButton
@@ -94,16 +96,17 @@ public struct YearReducer {
                 return .none
                 
             case .onAppear:
-                return .merge(
-                    calculateYear(state: &state),
-                    .publisher {
-                        state.$paySources.publisher.map { updatedSources in
-                            Action.paySourcesUpdated(updatedSources)
-                        }
+                return .publisher {
+                    state.$paySources.publisher.map { updatedSources in
+                        Action.paySourcesUpdated(updatedSources)
                     }
-                )
+                }
                 
             case .paySourcesUpdated:
+                return calculateYear(state: &state)
+                
+            case .scenePhaseDidChange(old: let old, new: let new):
+                guard old != new, new == .active else { return .none }
                 return calculateYear(state: &state)
                 
             case .tappedAddPaySourceButton:
