@@ -1,4 +1,5 @@
 import ComposableArchitecture
+import ComposableArchitectureExtensions
 import Foundation
 import Models
 import MonthDetailsFeature
@@ -56,6 +57,7 @@ public struct YearReducer {
     public enum Action: BindableAction {
         case binding(BindingAction<State>)
         case destination(PresentationAction<Destination.Action>)
+        case observedCalendarDayChanged
         case onAppear
         case paySourcesUpdated(IdentifiedArrayOf<PaySource>)
         case scenePhaseDidChange(old: ScenePhase, new: ScenePhase)
@@ -95,12 +97,18 @@ public struct YearReducer {
             case .destination:
                 return .none
                 
+            case .observedCalendarDayChanged:
+                return calculateYear(state: &state)
+                
             case .onAppear:
-                return .publisher {
-                    state.$paySources.publisher.map { updatedSources in
-                        Action.paySourcesUpdated(updatedSources)
-                    }
-                }
+                return .merge(
+                    .publisher {
+                        state.$paySources.publisher.map { updatedSources in
+                            Action.paySourcesUpdated(updatedSources)
+                        }
+                    },
+                    Effect.calendarDayChanged(perform: Action.observedCalendarDayChanged)
+                )
                 
             case .paySourcesUpdated:
                 return calculateYear(state: &state)
